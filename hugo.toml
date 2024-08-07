@@ -6,7 +6,8 @@ theme = "smigle"
 [params]
     author = "Prakhar Gupta"
     subtitle = "confused undergrad studying ece"
-    
+    mainSections = ["blog", "projects"]
+    rssLink = "/rss.xml"
     [[params.social]]
         name = "GitHub"
         url = "https://github.com/screamingpigeon"
@@ -38,4 +39,9 @@ theme = "smigle"
         name = "Blog"
         pageRef = "/blog/"
         weight = 5
+    [[menu.main]]
+        name = "RSS"
+        url = "index.xml"
+        weight = 6
+
 
