@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>idk what to name this</title>
+    <link>//localhost:1313/</link>
+    <description>Recent content on idk what to name this</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 01 Jan 0001 00:00:00 +0000</lastBuildDate>
+    <atom:link href="//localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>About Me</title>
+      <link>//localhost:1313/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/about/</guid>
+      <description>whoami I&amp;rsquo;m Prakhar, an undergraduate majoring in Computer Engineering at the University of Illinois (Urbana-Champaign)</description>
+    </item>
+  </channel>
+</rss>

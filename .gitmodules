@@ -1,0 +1,3 @@
+[submodule "themes/smigle"]
+	path = themes/smigle
+	url = https://github.com/rosorio/smigle-hugo-theme
