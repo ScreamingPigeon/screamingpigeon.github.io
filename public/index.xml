@@ -1,0 +1,48 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Prakhar Gupta</title>
+    <link>//localhost:1313/</link>
+    <description>confused undergrad studying ece</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <atom:link href="//localhost:1313/rss.xml" rel="self" type="application/rss+xml" />
+
+    
+    <item>
+      <title>foo</title>
+      <link>//localhost:1313/blog/touch/</link>
+      <description>
+          Welcome post on my blog? Welcome to the blog!
+          
+          
+            <p>Tags: <a href="/tags/blog">blog</a> <a href="/tags/welcome">welcome</a> </p>
+          
+          <p>Word Count: 9</p>
+          <p>Reading Time: 1 minutes</p>
+          
+      </description>
+      <pubDate>Thu, 08 Aug 2024 03:39:15 IST</pubDate>
+      <guid>//localhost:1313/blog/touch/</guid>
+    </item>
+    
+    <item>
+      <title>Making a POSIX (-ish?) Linux Kernel</title>
+      <link>//localhost:1313/projects/ece391/</link>
+      <description>
+          Interactive Demo here Features include Concurrency through RoundRobin Scheduler Interrupt Support, Keyboard IO, RTC Custom read-only filesystem with POXIS(-ish?) syscalls x86_32 Paging exec() and exit() functionality for certain programs For academic integrity reasons, I cannot share the source code
+This project also has mouse support, soundblasters, and real-time UART pvp TicTacToe implemented for extra credit. Not available in the online demo. This placed 3rd in the Design competition in SP24 
+          
+          
+            <p>Tags: <a href="/tags/projects">projects</a> <a href="/tags/operating-systems">operating-systems</a> </p>
+          
+          <p>Word Count: 70</p>
+          <p>Reading Time: 1 minutes</p>
+          
+      </description>
+      <pubDate>Thu, 09 May 2024 03:39:15 IST</pubDate>
+      <guid>//localhost:1313/projects/ece391/</guid>
+    </item>
+    
+  </channel>
+</rss>
+

@@ -1,0 +1,47 @@
+baseURL = '127.0.0.1'
+languageCode = 'en-us'
+title = 'Prakhar Gupta'
+theme = "smigle"
+
+[params]
+    author = "Prakhar Gupta"
+    subtitle = "confused undergrad studying ece"
+    mainSections = ["blog", "projects"]
+    rssLink = "/rss.xml"
+    [[params.social]]
+        name = "GitHub"
+        url = "https://github.com/screamingpigeon"
+    [[params.social]]
+        name = "LinkedIn"
+        url = "https://linkedin.com/in/prakg"
+    [[params.social]]
+        name = "Email"
+        url = "mailto://prakhar7@illinois.edu"
+
+[menu]
+    [[menu.main]] 
+        name = "Home"
+        pageRef = "/"
+        weight = 1
+    [[menu.main]] 
+        name = "About Me"
+        pageRef = "/about"
+        weight = 2
+    [[menu.main]] 
+        name = "Research"
+        pageRef = "/research/"
+        weight = 3
+    [[menu.main]] 
+        name = "Projects"
+        pageRef = "/projects/"
+        weight = 4
+    [[menu.main]] 
+        name = "Blog"
+        pageRef = "/blog/"
+        weight = 5
+    [[menu.main]]
+        name = "RSS"
+        url = "index.xml"
+        weight = 6
+
+
