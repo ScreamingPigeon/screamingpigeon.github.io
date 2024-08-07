@@ -3,11 +3,23 @@ title = 'About Me'
 layout = 'default'
 +++
 
-# ```whoami```
+# ```[~]$ man prakhar```
 
-I'm **Prakhar**, an undergraduate majoring in Computer Engineering at the University of Illinois (Urbana-Champaign)
 
-<div style="text-align: center;">
-  <img src="/data/me-min.png" alt="This was supposed to be a picture of me" />
-</div>
+## NAME
+prakhar gupta   -   undergradue studying computer engineering @ univeristy of illinois (urbana champaign)
+
+## SYNOPSIS
+
+[My Resume](../about/resume.pdf)
+
+## DESCRIPTION
+I am interested in
+
+- Operating Systems (I use arch btw)
+- Networking
+- Embedded Systems
+- Signal Processing
+- HPC systems
+- Containerization
 

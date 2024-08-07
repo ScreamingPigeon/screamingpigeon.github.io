@@ -1,6 +1,6 @@
 baseURL = '127.0.0.1'
 languageCode = 'en-us'
-title = 'idk what to name this'
+title = 'Prakhar Gupta'
 theme = "smigle"
 
 [params]
@@ -13,8 +13,9 @@ theme = "smigle"
     [[params.social]]
         name = "LinkedIn"
         url = "https://linkedin.com/in/prakg"
-
-        
+    [[params.social]]
+        name = "Email"
+        url = "mailto://prakhar7@illinois.edu"
 
 [menu]
     [[menu.main]] 

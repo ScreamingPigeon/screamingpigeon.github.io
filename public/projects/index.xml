@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Projects on Prakhar Gupta</title>
+    <link>//localhost:1313/projects/</link>
+    <description>Recent content in Projects on Prakhar Gupta</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 09 May 2024 03:39:15 +0530</lastBuildDate>
+    <atom:link href="//localhost:1313/projects/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Making a POSIX (-ish?) Linux Kernel</title>
+      <link>//localhost:1313/projects/ece391/</link>
+      <pubDate>Thu, 09 May 2024 03:39:15 +0530</pubDate>
+      <guid>//localhost:1313/projects/ece391/</guid>
+      <description>Interactive Demo here Features include Concurrency through RoundRobin Scheduler Interrupt Support, Keyboard IO, RTC Custom read-only filesystem with POXIS(-ish?) syscalls x86_32 Paging exec() and exit() functionality for certain programs For academic integrity reasons, I cannot share the source code&#xA;This project also has mouse support, soundblasters, and real-time UART pvp TicTacToe implemented for extra credit. Not available in the online demo. This placed 3rd in the Design competition in SP24 </description>
+    </item>
+  </channel>
+</rss>
