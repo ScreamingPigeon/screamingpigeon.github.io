@@ -7,7 +7,7 @@ layout = 'default'
 
 
 ## NAME
-prakhar gupta   -   undergradue studying computer engineering @ univeristy of illinois (urbana champaign)
+prakhar gupta   -   undergraduate studying computer engineering @ univeristy of illinois (urbana champaign)
 
 ## SYNOPSIS
 
