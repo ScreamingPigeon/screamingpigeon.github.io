@@ -2,6 +2,7 @@
 title = 'Supermicrosummit24'
 date = 2024-08-27T11:55:40-05:00
 layout = 'Default'
+author = 'Prakhar'
 tags = ['blog', 'conference']
 +++
 

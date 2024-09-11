@@ -9,7 +9,7 @@
   />
   
     
-      <title>foo | Prakhar Gupta</title>
+      <title>Interacting with root processes using $LD_PRELOAD | Prakhar Gupta</title>
     
   
   <link rel="stylesheet" href="/css/reset.css"/>
@@ -69,15 +69,15 @@
       
   <main>
     <article>
-      <h1>foo</h1>
+      <h1>Interacting with root processes using $LD_PRELOAD</h1>
       <div class="post-meta">
   <strong>
     <span>Posted on</span>
-    <time>2024-08-08 03:39:15</time>
+    <time>2024-08-09 05:41:22</time>
     
     
   </strong>
-  <span> • 9 words</span>
+  <span> • 73 words</span>
   <span> • 1 minute read</span>
   
   
@@ -85,13 +85,25 @@
       <span>Tags:</span>
       
         <a href="/tags/blog">blog</a>, 
-        <a href="/tags/welcome">welcome</a>
+        <a href="/tags/operating-systems">operating-systems</a>, 
+        <a href="/tags/compilers">compilers</a>, 
+        <a href="/tags/c">c</a>
     </div>
   
 </div>
 
-      <div><h1 id="welcome-post-on-my-blog">Welcome post on my blog?</h1>
-<p>Welcome to the blog!</p>
+      <div><h1 id="what-is-ld_preload">What is <code>$LD_PRELOAD</code>?</h1>
+<p>As listed in the <a href="https://www.man7.org/linux/man-pages/man8/ld.so.8.html">man pages</a> for <code>ld.so</code>:</p>
+<blockquote>
+<p><strong>LD_PRELOAD</strong></p>
+<p>A list of additional, user-specified, ELF shared objects
+to be loaded before all others.  This feature can be used
+to selectively override functions in other shared objects.</p>
+</blockquote>
+<p>Effectively, <code>$LD_PRELOAD</code> is an environment variable that points to
+one or more Shared Object (.so) files that are linked
+to an ELF file at runtime.</p>
+<p>Clearly, this can lead to some pretty cool things.</p>
 </div>
     </article>
   </main>
