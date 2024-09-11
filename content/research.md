@@ -6,10 +6,9 @@ layout = 'default'
 
 
 These are some of the things I've worked on:
-- *"Exploring Recurrent Neural Networks in Tai-Chi Practitioners"*, Society for Neuroscience 2024 (in-progress)
-- *"Exploring Recurrent Neural Networks in Tai-Chi Practitioners"*, Society for PsychoPhysiological Research Conference 2024 (in-progress)
-- *"Exploring Recurrent Neural Networks in Tai-Chi Practitioners"*, Brain Sciences Journal MDPI 2024 (in-progress)
-- *"Adaptive Graph Thresholding"*, Coordinated Science Laboratory Student Conference 2024 ([poster](../research/CSLSC_24_poster.pdf)), ([abstract](../research/CSLC_Abstract.pdf))
+- *"Exploring Recurrent Neural Networks in Tai-Chi Practitioners"*, Society for Neuroscience 2024 (Poster Presentation)
+- *"Tai Chi Practice Buffers Aging Effects in Functional Brain Connectivity"*, MDPI Brain Sciences Journal (SI AI applications in Neuroimaging) 2024 ([article](https://www.mdpi.com/2076-3425/14/9/901))
+- *"Adaptive Graph Thresholding"*, Coordinated Science Laboratory Conference 2024 ([poster](../research/CSLSC_24_poster.pdf)), ([abstract](../research/CSLC_Abstract.pdf))
 
 
 And then there are some personal projects that haven't made it out of the figurative garage yet. Some of these are rejected submissions and I'm contemplating making the feedback I received public on this site?:
