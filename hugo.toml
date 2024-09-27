@@ -5,7 +5,7 @@ theme = "smigle"
 
 [params]
     author = "Prakhar Gupta"
-    subtitle = "confused undergrad studying ece"
+    subtitle = "I like computers..."
     mainSections = ["blog", "projects"]
     rssLink = "/rss.xml"
     [[params.social]]
