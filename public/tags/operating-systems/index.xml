@@ -15,5 +15,12 @@
       <guid>//localhost:1313/projects/ece391/</guid>
       <description>Interactive Demo here Features include Concurrency through RoundRobin Scheduler Interrupt Support, Keyboard IO, RTC Custom read-only filesystem with POXIS(-ish?) syscalls x86_32 Paging exec() and exit() functionality for certain programs For academic integrity reasons, I cannot share the source code&#xA;This project also has mouse support, soundblasters, and real-time UART pvp TicTacToe implemented for extra credit. Not available in the online demo. This placed 3rd in the Design competition in SP24 </description>
     </item>
+    <item>
+      <title>Making a POSIX (-ish?) Linux Kernel</title>
+      <link>//localhost:1313/projects/flush_reload/</link>
+      <pubDate>Thu, 09 May 2024 03:39:15 +0530</pubDate>
+      <guid>//localhost:1313/projects/flush_reload/</guid>
+      <description>Interactive Demo here Features include Concurrency through RoundRobin Scheduler Interrupt Support, Keyboard IO, RTC Custom read-only filesystem with POXIS(-ish?) syscalls x86_32 Paging exec() and exit() functionality for certain programs For academic integrity reasons, I cannot share the source code&#xA;This project also has mouse support, soundblasters, and real-time UART pvp TicTacToe implemented for extra credit. Not available in the online demo. This placed 3rd in the Design competition in SP24 </description>
+    </item>
   </channel>
 </rss>

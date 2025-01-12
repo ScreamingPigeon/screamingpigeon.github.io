@@ -4,7 +4,7 @@ layout = 'Default'
 date = 2024-12-23T08:30:00-06:00 
 author = 'Prakhar'
 tags = ['projects', 'computer-architecture']
-draft - true
+draft = true
 +++
 
 
