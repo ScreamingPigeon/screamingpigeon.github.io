@@ -4,7 +4,6 @@ layout = 'Default'
 date = 2024-12-23T08:30:00-06:00 
 author = 'Prakhar'
 tags = ['projects', 'computer-architecture']
-draft = true
 +++
 
 
@@ -233,9 +232,12 @@ There is an increased pipeline depth in out of order processors due to more need
 But we were able to demonstrate how instructions were able to execute out of order.
 
 The main reasons for stalls in such a processor come from
-- ROB getting full
+- ROB getting full - this happens when an instruction in the "Head" of the ROB takes particularly long to complete, and all pursuing 
+  instructions complete and occupy the ROB, but can't be committed because the instruction at the head hasn't committed. This 
+  is also known as **ROB Starvation**
 - Reservation Station getting full
 - Issue queues getting full
+
 
 
 Making these structures larger allows us to exploit bigger ILP windows - but also increases the combinational logic
@@ -259,5 +261,131 @@ helps us deal with branches (which I will talk about more in my follow-up post).
 
 ! picture of RAT Here
 
-Each Functional unit has it's own issue Queue. which holds instructions that have been dispatched. 
+Each Functional unit has it's own issue queue. which holds instructions that have been dispatched. The issue
+queue contains some issue logic - which is a muxtree that "dispatches" instructions with ready operands to the 
+functional unit.
+
+
+ERR can be explained with the following examples:
+```
+i0. x1 = x2 + x3
+i1. x4 = x1 + x5
+i2. x1 = x5 + x2
+i3. x5 = x1 + x2
+```
+
+Let's assume our CPU spec presents only 5 architectural registers (`x1` - `x5`). In an ERR processor, we have 
+physical registers - usually more than the number of architectural registers. In our case, let's say we have
+10 physical registers (`p1`-`p10`).
+
+
+The instructions abover present 3 types of "dependencies":
+- Read after Write  (RAW): Instruction 0 and 1
+- Write after Write (WAW): Instructions 0 and 3
+- Write after Read  (WAR): Instructions 2 and 1, Instructions 3 and 2
+
+
+To make the hazards posed by these data dependencies clear - let's assume that the ALU takes 3 clock cycles to 
+complete a 32 bit addition. We have 2 ALU Functional Units in this ERR CPU. Let's assume for the sake of simplicity,
+that the issue queues have a depth of "2" (these are usually parameterized)
+
+### Execution Flow with ERR
+
+- **Instruction Fetch and Decode**: All the instructions are fetched, and decoded sequentially - and placed in the instruction queue
+  Since there were no instructions prior to these - all the hardwware resources in the deeper stages of the CPU (issue queues, ROB)
+  are unoccupied. So instructionsd are sent to the issue queues as they arrive
+
+- **Cycle 0**:
+  - `i0` dispatched from instruction queue to issue queue. Since x1 is the destination being written to - it is mapped to
+  some physical register `p2` during the issue logic. This is usually done using a bitvector known as the free list. The RAT is updated
+  to reflect the new mapping
+
+- **Cycle 1**
+  - `i0` moves from issue queue (`IQ1`) and starts being executed by `ALU1`. 2 more cycles to go for it to finish execution
+  - `i1` dispatched from instruction queue to an issue queue. Let's say we have a random policy to choose which non-full IQ an instruction
+     is issued to. So it is now sitting in `IQ2`. During the issue logic - we know that that `x1` is mapped to `p2` - which is used
+     as one of the operands. Since the `x4` is being written to - it is remapped to the next free physical register `p3`. The RAT and free
+     list are updated to reflect this. 
+
+- **Cycle 2**
+  - `i0` on its 2nd cycle of execution 
+  - `i1` waiting in `IQ2` for `p2` to be become available - a RAW dependency - the only "true" dependency
+  - `i2` dispatched randomly to an instruction queue 2 `IQ2`. This queue is now full.  This instruction also writes to 
+    `x1`. However, `i0` also does that.... what's going on? This is our Write after Write dependency. However, since it is
+    `x1` we are writing to - we can simply map it to a new free physical register `p4`. This in no way affects the execution
+    of `i1`. This new mapping also ensures that the `x1` used as an operand in `i1` is not affected by the write, since it relies
+    on the old-mapping to `p2` - enforcing correctness and eliminating the Write after Read dependency.
+    Therefore it is possible to execute `i2` before `i1` without affecting the correctness of the operations - since
+    they were issued in-order.
+
+
+- **Cycle 3**
+  - `i0` on its last cycle of execution
+  - `i1` waiting in `IQ2` for `p2` to be become available 
+  - `i2` moves from `IQ2` to `ALU2` and starts executing
+  - `i3` dispatched to `IQ1` - waiting on the results of `i2` or for `p4` to become free (RAW)
+
+- **Cycle 4**
+  - `i0` finishes execution and moves to the ROB to be committed. Depending on how forwarding is implemented
+    the issue ques may be immediately aware of `p2` becoming available, or only after being committed. In order to keep
+    this example short, let's assume some sort of same-cycle CDB-->IQ forwarding mechanism is in place.
+  - `i1` ready now, since it has its operand `p2` ready. However `ALU2` busy so it needs to wait
+  - `i2` on its 2nd cycle of execution in `ALU2`
+  - `i3` waiting on `p4` to be ready in `IQ1`
+
+- **Cycle 5**
+  - `i1` waiting for `ALU2`
+  - `i2` on last cycle of execution in `ALU2`
+  - `i3` in `IQ1` waiting for `p4`
+
+- **Cycle 6**
+  - `i2` completes and `p4` broadcasted (NOTE: This instruction will wait in the ROB until `i1` is committed.)
+  - `i1` starts execution as `ALU2` becomes available
+  - `i3` starts execution as `p4` becomes available
+
+- **Cycles 7 and 8**
+  - `i1` and `i3` executing on the 2 ALU FUs
+
+- **Cycle 9** 
+  - Both `i1` and `i3` complete. Depending on bus arbitration policies - one, or both of them broadcast
+
+- **Cycle 10 (optional)**
+  - The remaining instruction (if at all) broadcasts
+
+
+
+
+And now we have demonstrated how ERR allows for out-of-order execution, solving the problem of WAR and WAW dependencies.
+ERR is usually more power hungry and larger than Tomasulo style processors.
+The ILP window can be made larger by increasing the size of the ROB, Issue Queues, and increasing the number of FUs/CDBs
+
+## Discussion
+
+And now I have tried to explain the basic premise of OOO cpus. Nothing beats the IPC of pipelined CPUs if memory was ideal and
+didn't take ages to respond and was cheap for power/area. But OOO CPUs do a good job with what we have.
+
+It is worth noting that branches get much more complicated to deal with in a OOO CPU. In the case of a branch resolving, and
+the prediction being incorrect - when said branch instruction is committed from the ROB - and the misprediction is discovered - the
+entire CPU is flushed. Because of the number of queues and stages in an OOO processor - this is an expensive affair - significantly
+degrading its performance.
+
+
+# Conclusion
+This blog post took me a lot longer to write than I was expecting. It's my first attempt at trying to explain a fairly technical
+topic over text only. I have glossed over a lot of implementation details (ROB, CDB, RAT) and only tried to convey the intuiton for
+how OOO processors beat certain limitations - so reading a textbook/lecture slides on this is highly recommended. It should help
+cement the foundation of understanding, and go over implementation details I would also recommend taking a look at
+ - Computer Organization and Design RISC-V Edition: The Hardware Software Interface by David A. Patterson and John L. Hennessy
+ - Computer Architecture: A Quantitative Approach (6th Ed.) by John L. Hennessy and David A. Patterson
+ - [BOOM](https://docs.boom-core.org/en/latest/)
+ - [Processor Microarchitecture an implementation perspective](https://dl.icdst.org/pdfs/files/15b09def448c317556dc0fc412aee571.pdf)
+
+
+
+Part 2 of this will cover some of my experience designing a baseline CPU, and writing benchmarks to see what needed extra bells
+and whistles to run better.
+
+If you have an ideas for improving the clarity of this writeup- do let me know :D
+
+
 
