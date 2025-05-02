@@ -1,0 +1,147 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Prakhar Gupta</title>
+    <link>//localhost:1313/</link>
+    <description>I like computers...</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <atom:link href="//localhost:1313/rss.xml" rel="self" type="application/rss+xml" />
+
+    
+    <item>
+      <title>Developing an Out-Of-Order RISC-V CPU: part one</title>
+      <link>//localhost:1313/projects/ooo_pt1/</link>
+      <description>
+          This post is about 5 months late. I created the markdown file on 12/23/2025 but never got around to writing anything to it. Now, I have some time on my hands (and I feel bad about not writing as often as I had planned to) - so I figure I&rsquo;ll give this a shot again.
+Last fall, I took ECE 411 the infamous computer-architecture class at my university. This was a class I was really looking forward to.
+          
+          
+            <p>Tags: <a href="/tags/projects">projects</a> <a href="/tags/computer-architecture">computer-architecture</a> </p>
+          
+          <p>Word Count: 3135</p>
+          <p>Reading Time: 15 minutes</p>
+          
+      </description>
+      <pubDate>Mon, 23 Dec 2024 08:30:00 CST</pubDate>
+      <guid>//localhost:1313/projects/ooo_pt1/</guid>
+    </item>
+    
+    <item>
+      <title>Midwest Security Workshop 2024</title>
+      <link>//localhost:1313/blog/msw24/</link>
+      <description>
+          I had the opportunity of visiting the 9th midwestern security workshop hosted at purdue this year.
+I found out about this through a grad student (Patrick) who used to be (and still kinda is?) a part of ECE 391 (Operating-Systems) Course Staff. I handn&rsquo;t visited the purdue campus, and figured that this might be worth going to - even if i know nothing about computer security.
+Well, nothing in the &ldquo;formal&rdquo; academic context.
+          
+          
+            <p>Tags: <a href="/tags/blog">blog</a> <a href="/tags/conference">conference</a> <a href="/tags/security">security</a> </p>
+          
+          <p>Word Count: 213</p>
+          <p>Reading Time: 1 minutes</p>
+          
+      </description>
+      <pubDate>Sat, 16 Nov 2024 20:00:00 CST</pubDate>
+      <guid>//localhost:1313/blog/msw24/</guid>
+    </item>
+    
+    <item>
+      <title>Danielkroening</title>
+      <link>//localhost:1313/blog/danielkroening/</link>
+      <description>
+          Speaker Bio: Daniel Kroening is a Senior Principal Applied Scientist at Amazon, where he works on the correctness of the Neuron Compiler for distributed training and inference. Prior to joining Amazon, he worked as a Professor of Computer Science at the University of Oxford and is the co-founder of Diffblue Ltd., a University spinout that develops AI that targets code and code-like artifacts. He has received the Semiconductor Research Corporation (SRC) Inventor Recognition Award, an IBM Faculty Award, a Microsoft Research SEIF Award, and the Wolfson Research Merit Award.
+          
+          
+            <p>Tags: <a href="/tags/blog">blog</a> <a href="/tags/talks">talks</a> </p>
+          
+          <p>Word Count: 403</p>
+          <p>Reading Time: 2 minutes</p>
+          
+      </description>
+      <pubDate>Wed, 09 Oct 2024 12:36:28 CDT</pubDate>
+      <guid>//localhost:1313/blog/danielkroening/</guid>
+    </item>
+    
+    <item>
+      <title>Neuroscience 2024</title>
+      <link>//localhost:1313/blog/sfn24/</link>
+      <description>
+          The weekend Before I don&rsquo;t know where to start for this blog entry. Things have been super hectic and it&rsquo;s been a long time since I have written actual words/sentences that aren&rsquo;t meeting notes or homework/lab reports. Well I guess this blog post will evolve into meeting notes once I get to the actual conference.
+Neuroscience 2024, is conveniently happening in Chicago, from 10/5 (i think) to 10/9. I am going to be there on 10/7 and 10/8.
+          
+          
+            <p>Tags: <a href="/tags/blog">blog</a> <a href="/tags/conference">conference</a> </p>
+          
+          <p>Word Count: 153</p>
+          <p>Reading Time: 1 minutes</p>
+          
+      </description>
+      <pubDate>Sat, 05 Oct 2024 19:12:24 CDT</pubDate>
+      <guid>//localhost:1313/blog/sfn24/</guid>
+    </item>
+    
+    <item>
+      <title>Supermicrosummit24</title>
+      <link>//localhost:1313/blog/supermicrosummit24/</link>
+      <description>
+          Super Micro Open Stroage Summit 2024 https://www.thecube.net/events/supermicro/open-storage-summit-2024
+I attended the last 2 events at this stummit. Here are my thoughts and notes:
+The New High Performance Computing: Optimized Storage from HPC to AI Speakers:
+Randy Kreiser Supermicro CJ Newburn NVIDIA Balaji Venkateshwaran DDN Bill Panos Solidigm CJ- The moderator looks like he is being held at gunpoint.
+Rate at which usage models are changing
+need for new infrastructure
+new models characterized by large scale and making memory accesses of fine granularity
+          
+          
+            <p>Tags: <a href="/tags/blog">blog</a> <a href="/tags/conference">conference</a> </p>
+          
+          <p>Word Count: 529</p>
+          <p>Reading Time: 3 minutes</p>
+          
+      </description>
+      <pubDate>Tue, 27 Aug 2024 11:55:40 CDT</pubDate>
+      <guid>//localhost:1313/blog/supermicrosummit24/</guid>
+    </item>
+    
+    <item>
+      <title>Interacting with root processes using $LD_PRELOAD</title>
+      <link>//localhost:1313/blog/2408ld_preload/</link>
+      <description>
+          What is $LD_PRELOAD? As listed in the man pages for ld.so:
+LD_PRELOAD
+A list of additional, user-specified, ELF shared objects to be loaded before all others. This feature can be used to selectively override functions in other shared objects.
+Effectively, $LD_PRELOAD is an environment variable that points to one or more Shared Object (.so) files that are linked to an ELF file at runtime.
+Clearly, this can lead to some pretty cool things.
+          
+          
+            <p>Tags: <a href="/tags/blog">blog</a> <a href="/tags/operating-systems">operating-systems</a> <a href="/tags/compilers">compilers</a> <a href="/tags/c">c</a> </p>
+          
+          <p>Word Count: 73</p>
+          <p>Reading Time: 1 minutes</p>
+          
+      </description>
+      <pubDate>Fri, 09 Aug 2024 05:41:22 &#43;0530</pubDate>
+      <guid>//localhost:1313/blog/2408ld_preload/</guid>
+    </item>
+    
+    <item>
+      <title>Making a POSIX (-ish?) Linux Kernel</title>
+      <link>//localhost:1313/projects/ece391/</link>
+      <description>
+          Interactive Demo here Features include Concurrency through RoundRobin Scheduler Interrupt Support, Keyboard IO, RTC Custom read-only filesystem with POXIS(-ish?) syscalls x86_32 Paging exec() and exit() functionality for certain programs For academic integrity reasons, I cannot share the source code
+This project also has mouse support, soundblasters, and real-time UART pvp TicTacToe implemented for extra credit. Not available in the online demo. This placed 3rd in the Design competition in SP24 
+          
+          
+            <p>Tags: <a href="/tags/projects">projects</a> <a href="/tags/operating-systems">operating-systems</a> </p>
+          
+          <p>Word Count: 70</p>
+          <p>Reading Time: 1 minutes</p>
+          
+      </description>
+      <pubDate>Thu, 09 May 2024 03:39:15 &#43;0530</pubDate>
+      <guid>//localhost:1313/projects/ece391/</guid>
+    </item>
+    
+  </channel>
+</rss>
+

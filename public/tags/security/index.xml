@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Security on Prakhar Gupta</title>
+    <link>//localhost:1313/tags/security/</link>
+    <description>Recent content in Security on Prakhar Gupta</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 16 Nov 2024 20:00:00 -0600</lastBuildDate>
+    <atom:link href="//localhost:1313/tags/security/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Midwest Security Workshop 2024</title>
+      <link>//localhost:1313/blog/msw24/</link>
+      <pubDate>Sat, 16 Nov 2024 20:00:00 -0600</pubDate>
+      <guid>//localhost:1313/blog/msw24/</guid>
+      <description>I had the opportunity of visiting the 9th midwestern security workshop hosted at purdue this year.&#xA;I found out about this through a grad student (Patrick) who used to be (and still kinda is?) a part of ECE 391 (Operating-Systems) Course Staff. I handn&amp;rsquo;t visited the purdue campus, and figured that this might be worth going to - even if i know nothing about computer security.&#xA;Well, nothing in the &amp;ldquo;formal&amp;rdquo; academic context.</description>
+    </item>
+  </channel>
+</rss>
