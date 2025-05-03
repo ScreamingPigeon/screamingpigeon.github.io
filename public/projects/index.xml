@@ -4,7 +4,7 @@
     <title>Projects on Prakhar Gupta</title>
     <link>//localhost:1313/projects/</link>
     <description>Recent content in Projects on Prakhar Gupta</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 23 Dec 2024 08:30:00 -0600</lastBuildDate>
     <atom:link href="//localhost:1313/projects/index.xml" rel="self" type="application/rss+xml" />
@@ -13,7 +13,7 @@
       <link>//localhost:1313/projects/ooo_pt1/</link>
       <pubDate>Mon, 23 Dec 2024 08:30:00 -0600</pubDate>
       <guid>//localhost:1313/projects/ooo_pt1/</guid>
-      <description>This post is about 5 months late. I created the markdown file on 12/23/2025 but never got around to writing anything to it. Now, I have some time on my hands (and I feel bad about not writing as often as I had planned to) - so I figure I&amp;rsquo;ll give this a shot again.&#xA;Last fall, I took ECE 411 the infamous computer-architecture class at my university. This was a class I was really looking forward to.</description>
+      <description>This post is about 5 months late. I created the markdown file on 12/23/2025 but never got around to writing anything to it. Now, I have some time on my hands (and I feel bad about not writing as often as I had planned to) - so I figured I will give this a shot again.&#xA;Last fall, I took ECE 411 the infamous computer-architecture class at my university. This was a class I was really looking forward to.</description>
     </item>
     <item>
       <title>Making a POSIX (-ish?) Linux Kernel</title>

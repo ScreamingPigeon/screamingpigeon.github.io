@@ -4,17 +4,10 @@
     <title>Operating-Systems on Prakhar Gupta</title>
     <link>//localhost:1313/tags/operating-systems/</link>
     <description>Recent content in Operating-Systems on Prakhar Gupta</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 09 Aug 2024 05:41:22 +0530</lastBuildDate>
+    <lastBuildDate>Thu, 09 May 2024 03:39:15 +0530</lastBuildDate>
     <atom:link href="//localhost:1313/tags/operating-systems/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Interacting with root processes using $LD_PRELOAD</title>
-      <link>//localhost:1313/blog/2408ld_preload/</link>
-      <pubDate>Fri, 09 Aug 2024 05:41:22 +0530</pubDate>
-      <guid>//localhost:1313/blog/2408ld_preload/</guid>
-      <description>What is $LD_PRELOAD? As listed in the man pages for ld.so:&#xA;LD_PRELOAD&#xA;A list of additional, user-specified, ELF shared objects to be loaded before all others. This feature can be used to selectively override functions in other shared objects.&#xA;Effectively, $LD_PRELOAD is an environment variable that points to one or more Shared Object (.so) files that are linked to an ELF file at runtime.&#xA;Clearly, this can lead to some pretty cool things.</description>
-    </item>
     <item>
       <title>Making a POSIX (-ish?) Linux Kernel</title>
       <link>//localhost:1313/projects/ece391/</link>

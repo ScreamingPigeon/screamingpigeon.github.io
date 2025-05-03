@@ -9,7 +9,7 @@ tags = ['projects', 'computer-architecture']
 
 This post is about 5 months late. I created the markdown file on 12/23/2025
 but never got around to writing anything to it. Now, I have some time on my hands (and I 
-feel bad about not writing as often as I had planned to) - so I figure I'll give this a shot
+feel bad about not writing as often as I had planned to) - so I figured I will give this a shot
 again.
 
 
@@ -259,7 +259,7 @@ instruction have completely finished execution and have been committed. This
 helps us deal with branches (which I will talk about more in my follow-up post). 
 
 
-! picture of RAT Here
+![funny picture of the RAT](/projects/ooo_pt1_rat_smol.png#center "A RAT")
 
 Each Functional unit has it's own issue queue. which holds instructions that have been dispatched. The issue
 queue contains some issue logic - which is a muxtree that "dispatches" instructions with ready operands to the 

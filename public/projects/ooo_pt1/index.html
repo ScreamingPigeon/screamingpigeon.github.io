@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="description"
+    content=""
+  />
+  
+    
+      <title>Developing an Out-Of-Order RISC-V CPU: part one | Prakhar Gupta</title>
+    
+  
+  <link rel="stylesheet" href="/css/reset.css"/>
+  <link rel="stylesheet" href="/css/font.css"/>
+  <link rel="stylesheet" href="/css/smigle.css"/>
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="theme-color" content="#ffffff">
+</head>
+
+  <body>
+    <header>
+  <div id="brand">
+    <a class="icon-link" href="//localhost:1313/">
+      <img
+        class="icon"
+        src="/images/brandIcon.svg"
+      />
+    </a>
+    <div class="text">
+      <a href="//localhost:1313/"><h1>Prakhar Gupta</h1></a>
+      <h3>I like computers...</h3>
+    </div>
+  </div>
+  <nav>
+    
+      
+        
+        <a href="/"><b>Home</b></a>
+      
+         | 
+        <a href="/about/"><b>About Me</b></a>
+      
+         | 
+        <a href="/research/"><b>Research</b></a>
+      
+         | 
+        <a href="/projects/"><b>Projects</b></a>
+      
+         | 
+        <a href="/blog/"><b>Blog</b></a>
+      
+         | 
+        <a href="/index.xml"><b>RSS</b></a>
+      
+    
+  </nav>
+  <hr />
+</header>
+
+    <div id="content">
+      
+  <main>
+    <article>
+      <h1>Developing an Out-Of-Order RISC-V CPU: part one</h1>
+      <div class="post-meta">
+  <strong>
+    <span>Posted on</span>
+    <time>2024-12-23 08:30:00</time>
+    
+    
+  </strong>
+  <span> • 3131 words</span>
+  <span> • 15 minute read</span>
+  
+  
+    <div>
+      <span>Tags:</span>
+      
+        <a href="/tags/projects">projects</a>, 
+        <a href="/tags/computer-architecture">computer-architecture</a>
+    </div>
+  
+</div>
+
+      <div><p>This post is about 5 months late. I created the markdown file on 12/23/2025
+but never got around to writing anything to it. Now, I have some time on my hands (and I
+feel bad about not writing as often as I had planned to) - so I figured I will give this a shot
+again.</p>
+<p>Last fall, I took <a href="https://courses.grainger.illinois.edu/ece411/fa2024/https://courses.grainger.illinois.edu/ece411/fa2024/">ECE 411</a>
+the infamous computer-architecture class at my university. This was a class I was really looking
+forward to. After dealing with some department advising beauracracy (and almost losing my seat in the course)
+I did end up taking the class - and I quite enjoyed it. The final project of the class
+involves designing a Out-Of-Order RISC-V CPU. This blog post is going to hopefully go over</p>
+<ul>
+<li>Theory of Operation for OOO CPUs</li>
+<li>My experience writing the RTL</li>
+<li>Exposing the rationale for some design choices</li>
+</ul>
+<p>EDIT: I am an hour into writing this post. It is clear to me that is going to be hard to
+fit a semester&rsquo;s worth of content into a single blog post. Therefore I have decided
+to split this into 2 posts. This one will focus on theory of operation and the next one will
+cover my personal experience developing the project, and some exciting news for the future.
+Hopefully it doesn&rsquo;t take me another 6 months to write it XD</p>
+<h1 id="what-is-out-of-order">What is Out-Of-Order?</h1>
+<p>If you&rsquo;re not already familiar - I would recommend you look at
+- <a href="https://en.wikipedia.org/wiki/Von_Neumann_architecture">Von Neuomann Architecture</a>
+- <a href="https://en.wikipedia.org/wiki/Instruction_pipelining">In-Order Pipelined CPUs</a>
+- <a href="https://en.wikipedia.org/wiki/Cache_(computing)">Caches</a></p>
+<p>In most computers - memory is very limited. CPU registers are implemented using flip-flops
+which are power hungry, and occupy considerable area. As such you end up consuming a lot of
+power/area per bit. BUT, the CPU gets instant access to the register. Therefore, the number
+of CPU registers is usually constrained to a number that optimizes Power/Area/Efficiency for
+a given use-case. For example, the RV32-I spec of RISC-V comes equipped with 32 32-bit CPU
+registers.</p>
+<p>In order for you to run any non-trivial program - you need fast access to memory. Caches are
+usually implemented in SRAM, which give you better power/area but are much slower. If the
+data you want is not present in the cache, then you go to DRAM which is cheaper than SRAM - but
+slower and physically far away from your CPU &ndash;&gt; which means even slower access times.</p>
+<p>And if the data you want has not been paged to DRAM, you go hunting for it in your HDD/SSD which
+is an incredibly slow process for a Processor that runs at MHz/GHz frequencies.</p>
+<p>Getting back to why Out of Order Matters</p>
+<p>Say for example you are attempting to perform the following operation on</p>
+<pre tabindex="0"><code>
+ 1. c = b + M[d]
+
+ 2. a = c + b
+
+ 3. d = d + b
+</code></pre><p>This is a straightforward addition operation. Let&rsquo;s assume <code>c</code>, <code>b</code>, <code>d</code>, and <code>a</code> are registers.</p>
+<p><code>M[d]</code> means we are attempting to <a href="https://en.wikipedia.org/wiki/Pointer_(computer_programming)">&ldquo;dereference a pointer&rdquo;</a>
+, i.e. access the data stored at the memory address whose value is stored in register <code>d</code></p>
+<p>For the sake of our example, let&rsquo;s say the data at address <code>d</code> is not present in the cache</p>
+<ul>
+<li>what happens? The Memory System goes up the memory hierarchy searching for it. Depending
+on the state of your computer - it make take anywhere between 10 to thousands of CPU cycles
+to get that data (<a href="https://en.wikipedia.org/wiki/Average_memory_access_time">AMAT</a>).</li>
+</ul>
+<p>A traditional in-order pipelined/multicycle CPU would have to stall all the pursuant instruction
+until this memory read is resolved, and only then will execute instructions 2 and 3.</p>
+<p>This is a huge waste of time. The fetch, decode and execute stages/hardware of the CPU just
+sits there - unutilized while we wait for the memory system to respond. OOO tries to fix this
+problem by exploiting <a href="https://en.wikipedia.org/wiki/Instruction-level_parallelism">Instruction Level Parallelism</a></p>
+<p>Now let&rsquo;s take a look at instructions 2 and 3. Evidently, instruction 2 is dependent on
+the outcome of instruction 1. What about instruction 3? It has no dependency on
+Instructions 1 or 2.</p>
+<p>An OOO CPU is capable of executing instructions Out-Of-Order and this example is a great scenario
+where an OOO processor would utilize it&rsquo;s &ldquo;free&rdquo; hardware resources to execute the pursuant
+&ldquo;independent/ready&rdquo; instructions.</p>
+<h1 id="how-does-it-work---tomasulo">How does it work - Tomasulo</h1>
+<p>Out of order processors are not a new idea. IBM had already come up with an <a href="https://en.wikipedia.org/wiki/Tomasulo%27s_algorithm">OOO hardware
+algorithm</a> back in 1967. I highly recommend
+watching <a href="https://www.youtube.com/watch?v=zS9ngvUQPNM">this video</a> for a more visual explanation.
+It is what I used to get a sense of what is going on when I took the class, and is probably
+far better than my attempt here.</p>
+<p>! insert picture here</p>
+<p>The basic principle of this algorithm, called Tomasulo&rsquo;s Algorithm - is that instructions
+are issued in-order, executed out-of-order, and committed/written-back in-order.</p>
+<p>In a Tomasulo processor, there is one common frontend (fetch, decode, issue) - multiple &ldquo;functionl
+units&rdquo; (which are ALUs and Memory Units for load/stores). Once executed - the functional
+units send the result to the commit buffer / reorder buffer - that commits the results of
+the instruction in-order.</p>
+<p>Each kind of functional unit has a queue known as reservation stations.</p>
+<pre><code>The reservation stations control when an instruction can execute
+</code></pre>
+<p>Each functional unit has a tag . The reservation stations, and the FUs are connected through
+a Common Data Bus. Each &ldquo;broadcast&rdquo; of a completion from the FU is accompanied by a tag</p>
+<p>Instuctions are fetched and decoded
+in order, and then placed in the issue queue.</p>
+<p>Each register/operand in an operation is assigned also assigned a tag - via a technique called
+<a href="https://en.wikipedia.org/wiki/Register_renaming">&ldquo;Register Renaming&rdquo;</a>.
+In Tomasulo, each operand is assigned a &ldquo;tag&rdquo;. Unused registers have a special tag. Registers
+that are already in use - are assigned a placeholder tag - usuallly pointing to the tag of
+the functional unit where we expect the result to originate from.</p>
+<p>Let&rsquo;s go back to my initial example</p>
+<pre tabindex="0"><code> 1. c = b + M[d]
+
+ 2. a = c + b
+
+ 3. d = d + b
+</code></pre><p>In RISC-V memory and arithmetic operations cannot be muddled. So let&rsquo;s change the example a little</p>
+<pre tabindex="0"><code> 0. e = M[d]
+
+ 1. c = b + e
+
+ 2. a = c + b
+
+ 3. d = d + b
+</code></pre><h3 id="execution-flow-with-tomasulos-algorithm">Execution Flow with Tomasulo&rsquo;s Algorithm:</h3>
+<ul>
+<li>
+<p><strong>Instruction Fetch and Decode:</strong></p>
+<ul>
+<li>All three instructions are fetched and decoded in order. The CPU identifies the operations and operands involved.</li>
+</ul>
+</li>
+<li>
+<p><strong>Issue Stage:</strong></p>
+<ul>
+<li>
+<p><strong>Cyle 0</strong> Issued Instruction 0: <code>e = M[d]</code></p>
+<ul>
+<li>Since this is the first instruction, let&rsquo;s assume all the registrers and reservation stations are available</li>
+<li>This is a load operation. Let&rsquo;s assume loads take 4 CPU cycles.</li>
+<li><code>d</code> is immediately available to use, so it has a tag of <code>0</code></li>
+<li>since <code>e</code> is the destination, it&rsquo;s tag is changed from <code>0</code> to <code>L</code> (the tag of the memory FU - it can be any arbitrary distinct number)</li>
+<li>This instruction is now in the RS for Memory FU and will executing in 4 cycles</li>
+</ul>
+</li>
+<li>
+<p><strong>Cycle 1</strong> Issued Instruction 1 <code>c = b + e</code></p>
+<ul>
+<li>This is an arithmetic operation. Let&rsquo;s assume it takes 1 cycle to execute</li>
+<li>The CPU checks if <code>b</code> is available. It is, so a tag of <code>0</code></li>
+<li>The CPU checks if <code>e</code> is available. It has a tag of <code>L</code></li>
+<li>Since <code>C</code> is the destination register, it is tagged to <code>A</code> (the tag associated with ALU)</li>
+<li>This is issued to the Reservation Station for the ALU. Howe</li>
+<li>Since the operand for Instruction 0 is available, it starts being executed by the memory FU</li>
+</ul>
+</li>
+<li>
+<p><strong>Cycle 2</strong> Issued instruction 2 <code>a = c + b</code></p>
+<ul>
+<li><code>c</code> is dependent on the result of Instruction 1, so it takes on the tag of <code>A</code></li>
+<li><code>b</code> is tagged as <code>0</code> since it is readily available.</li>
+<li>Instruction 2 is also issued to the RS for the ALU FU</li>
+<li>Instruction 0 is on the 2nd cycle of execution</li>
+<li>Instruction 1 is waiting for a broadcast on the CDB associated with the tag <code>L</code> so it can mark its operand as ready and begin execution</li>
+</ul>
+</li>
+<li>
+<p><strong>Cycle 3</strong> Issued Instruction 3 <code>d = d + b</code></p>
+<ul>
+<li>This instruction can proceed independently as it only requires <code>d</code> and <code>b</code>, both of which are available with tag <code>0</code>.</li>
+<li>It is issued to the ALU RS</li>
+<li>Instruction 0 on it&rsquo;s 3rd cycle</li>
+<li>Instruction 1 waiting for broadcast with tag <code>L</code></li>
+<li>Instruction 2 waiting for broadcast with tag <code>A</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Cycle 4</strong></p>
+<ul>
+<li>Instruction 0 on it&rsquo;s 4th cycle</li>
+<li>Instruction 1 waiting for broadcast with tag <code>L</code></li>
+<li>Instruction 2 waiting for broadcast with tag <code>A</code></li>
+<li>All the operands for instruction 3 were ready, so it is being executed by the ALU FU this cycle</li>
+</ul>
+</li>
+<li>
+<p><strong>Cycle 5</strong></p>
+<ul>
+<li>Instruction 0: The load finally completes. The FU can broadcast its result with tag <code>L</code></li>
+<li>Instruction 3: This also finishes (in one cycle). The ALU FU can also broadcast a result with tag <code>A</code></li>
+</ul>
+<p>Now - there is only one CDB connecting the RSs and FUs. It is the &ldquo;common&rdquo; bus after all. Which FU can broadcast
+comes down to an arbitration policy. Let&rsquo;s assume that the memory FU gets first pick. So the tag <code>L</code> and result is
+broadcasted. Since the ALU FU can&rsquo;t broadcast - it stalls this cycle. (NOTE: There are a lot of CDB arbitration policies, including
+having multiple CDBs. We will discuss this more in the next blog post)</p>
+<ul>
+<li>Instruction 1 receives broadcast with tag <code>L</code> - but the ALU FU stalls since Instruction 3 was unable to broadcast</li>
+<li>Instruction 3 waiting for tag <code>A</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Cycle 6</strong></p>
+<ul>
+<li>Instruction 3 broadcasts its result, and the ALU accepts the next available instruction to exec</li>
+<li>Instruction 1 now being executed.</li>
+<li>Instruction 2 is still waiting</li>
+<li>Instruction 4 is now being committed/placed in Reorder buffer (ROB)</li>
+</ul>
+</li>
+<li>
+<p><strong>Cycle 7</strong></p>
+<ul>
+<li>Instruction 1 broadcasts <code>A</code>, ALU ready again</li>
+<li>Instruction 2 operand becomes available, starts being executed by ALU</li>
+<li>Instruction 3 in Reorder Buffer, waiting to for previous instruction to be be committed</li>
+</ul>
+</li>
+<li>
+<p><strong>Cyle 8</strong></p>
+<ul>
+<li>Instruction 1 comits</li>
+<li>Instruction 2 finishes and broadcasts</li>
+<li>Instuction 3 waiting in ROB</li>
+</ul>
+</li>
+<li>
+<p><strong>Cycle 9</strong></p>
+<ul>
+<li>Instruction 2 commits</li>
+<li>Instruction 3 waiting in ROB</li>
+</ul>
+</li>
+<li>
+<p><strong>Cycle 10</strong></p>
+<ul>
+<li>Instruction 3 commits</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Now obviously I have glossed over some of the details here. Reorder Buffer and commits form different
+stages of the backend of the CPU.</p>
+<p>There is an increased pipeline depth in out of order processors due to more need of processing instruction dispatching</p>
+<p>But we were able to demonstrate how instructions were able to execute out of order.</p>
+<p>The main reasons for stalls in such a processor come from</p>
+<ul>
+<li>ROB getting full - this happens when an instruction in the &ldquo;Head&rdquo; of the ROB takes particularly long to complete, and all pursuing
+instructions complete and occupy the ROB, but can&rsquo;t be committed because the instruction at the head hasn&rsquo;t committed. This
+is also known as <strong>ROB Starvation</strong></li>
+<li>Reservation Station getting full</li>
+<li>Issue queues getting full</li>
+</ul>
+<p>Making these structures larger allows us to exploit bigger ILP windows - but also increases the combinational logic
+needed to make decisions on readiness - limiting clock speed, increasing area and power consumption.</p>
+<h1 id="the-alternative-err">The Alternative: ERR</h1>
+<p>There is another alternative to Tomasulo&rsquo;s algorithm: Explicit Register Renaming.</p>
+<p>I found <a href="https://people.eecs.berkeley.edu/~kubitron/courses/cs252-S09/lectures/lec08-prediction.pdf">these slides</a>
+that have some nice visuals on ERR. The key difference between ERR and Tomasulo is that ERR de-links scheduling
+and renaming. Instead of &ldquo;tagging&rdquo; registers to functional units - we have an architectural register file
+and a physical register file. The physical registers are far more than the architectural registers. For example
+my project CPU had 64 physical CPUs - and only 32 architectural registers.  here is a Register Alias Table
+(the RAT) that keeps track of which physical registers map to which architectrual registers.
+Kind of like a hash table. There is also a retirement RAT which keeps track of mappings after
+instruction have completely finished execution and have been committed. This
+helps us deal with branches (which I will talk about more in my follow-up post).</p>
+<p><img src="/projects/ooo_pt1_rat_smol.png#center" alt="funny picture of the RAT" title="A RAT"></p>
+<p>Each Functional unit has it&rsquo;s own issue queue. which holds instructions that have been dispatched. The issue
+queue contains some issue logic - which is a muxtree that &ldquo;dispatches&rdquo; instructions with ready operands to the
+functional unit.</p>
+<p>ERR can be explained with the following examples:</p>
+<pre tabindex="0"><code>i0. x1 = x2 + x3
+i1. x4 = x1 + x5
+i2. x1 = x5 + x2
+i3. x5 = x1 + x2
+</code></pre><p>Let&rsquo;s assume our CPU spec presents only 5 architectural registers (<code>x1</code> - <code>x5</code>). In an ERR processor, we have
+physical registers - usually more than the number of architectural registers. In our case, let&rsquo;s say we have
+10 physical registers (<code>p1</code>-<code>p10</code>).</p>
+<p>The instructions abover present 3 types of &ldquo;dependencies&rdquo;:</p>
+<ul>
+<li>Read after Write  (RAW): Instruction 0 and 1</li>
+<li>Write after Write (WAW): Instructions 0 and 3</li>
+<li>Write after Read  (WAR): Instructions 2 and 1, Instructions 3 and 2</li>
+</ul>
+<p>To make the hazards posed by these data dependencies clear - let&rsquo;s assume that the ALU takes 3 clock cycles to
+complete a 32 bit addition. We have 2 ALU Functional Units in this ERR CPU. Let&rsquo;s assume for the sake of simplicity,
+that the issue queues have a depth of &ldquo;2&rdquo; (these are usually parameterized)</p>
+<h3 id="execution-flow-with-err">Execution Flow with ERR</h3>
+<ul>
+<li>
+<p><strong>Instruction Fetch and Decode</strong>: All the instructions are fetched, and decoded sequentially - and placed in the instruction queue
+Since there were no instructions prior to these - all the hardwware resources in the deeper stages of the CPU (issue queues, ROB)
+are unoccupied. So instructionsd are sent to the issue queues as they arrive</p>
+</li>
+<li>
+<p><strong>Cycle 0</strong>:</p>
+<ul>
+<li><code>i0</code> dispatched from instruction queue to issue queue. Since x1 is the destination being written to - it is mapped to
+some physical register <code>p2</code> during the issue logic. This is usually done using a bitvector known as the free list. The RAT is updated
+to reflect the new mapping</li>
+</ul>
+</li>
+<li>
+<p><strong>Cycle 1</strong></p>
+<ul>
+<li><code>i0</code> moves from issue queue (<code>IQ1</code>) and starts being executed by <code>ALU1</code>. 2 more cycles to go for it to finish execution</li>
+<li><code>i1</code> dispatched from instruction queue to an issue queue. Let&rsquo;s say we have a random policy to choose which non-full IQ an instruction
+is issued to. So it is now sitting in <code>IQ2</code>. During the issue logic - we know that that <code>x1</code> is mapped to <code>p2</code> - which is used
+as one of the operands. Since the <code>x4</code> is being written to - it is remapped to the next free physical register <code>p3</code>. The RAT and free
+list are updated to reflect this.</li>
+</ul>
+</li>
+<li>
+<p><strong>Cycle 2</strong></p>
+<ul>
+<li><code>i0</code> on its 2nd cycle of execution</li>
+<li><code>i1</code> waiting in <code>IQ2</code> for <code>p2</code> to be become available - a RAW dependency - the only &ldquo;true&rdquo; dependency</li>
+<li><code>i2</code> dispatched randomly to an instruction queue 2 <code>IQ2</code>. This queue is now full.  This instruction also writes to
+<code>x1</code>. However, <code>i0</code> also does that&hellip;. what&rsquo;s going on? This is our Write after Write dependency. However, since it is
+<code>x1</code> we are writing to - we can simply map it to a new free physical register <code>p4</code>. This in no way affects the execution
+of <code>i1</code>. This new mapping also ensures that the <code>x1</code> used as an operand in <code>i1</code> is not affected by the write, since it relies
+on the old-mapping to <code>p2</code> - enforcing correctness and eliminating the Write after Read dependency.
+Therefore it is possible to execute <code>i2</code> before <code>i1</code> without affecting the correctness of the operations - since
+they were issued in-order.</li>
+</ul>
+</li>
+<li>
+<p><strong>Cycle 3</strong></p>
+<ul>
+<li><code>i0</code> on its last cycle of execution</li>
+<li><code>i1</code> waiting in <code>IQ2</code> for <code>p2</code> to be become available</li>
+<li><code>i2</code> moves from <code>IQ2</code> to <code>ALU2</code> and starts executing</li>
+<li><code>i3</code> dispatched to <code>IQ1</code> - waiting on the results of <code>i2</code> or for <code>p4</code> to become free (RAW)</li>
+</ul>
+</li>
+<li>
+<p><strong>Cycle 4</strong></p>
+<ul>
+<li><code>i0</code> finishes execution and moves to the ROB to be committed. Depending on how forwarding is implemented
+the issue ques may be immediately aware of <code>p2</code> becoming available, or only after being committed. In order to keep
+this example short, let&rsquo;s assume some sort of same-cycle CDB&ndash;&gt;IQ forwarding mechanism is in place.</li>
+<li><code>i1</code> ready now, since it has its operand <code>p2</code> ready. However <code>ALU2</code> busy so it needs to wait</li>
+<li><code>i2</code> on its 2nd cycle of execution in <code>ALU2</code></li>
+<li><code>i3</code> waiting on <code>p4</code> to be ready in <code>IQ1</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Cycle 5</strong></p>
+<ul>
+<li><code>i1</code> waiting for <code>ALU2</code></li>
+<li><code>i2</code> on last cycle of execution in <code>ALU2</code></li>
+<li><code>i3</code> in <code>IQ1</code> waiting for <code>p4</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Cycle 6</strong></p>
+<ul>
+<li><code>i2</code> completes and <code>p4</code> broadcasted (NOTE: This instruction will wait in the ROB until <code>i1</code> is committed.)</li>
+<li><code>i1</code> starts execution as <code>ALU2</code> becomes available</li>
+<li><code>i3</code> starts execution as <code>p4</code> becomes available</li>
+</ul>
+</li>
+<li>
+<p><strong>Cycles 7 and 8</strong></p>
+<ul>
+<li><code>i1</code> and <code>i3</code> executing on the 2 ALU FUs</li>
+</ul>
+</li>
+<li>
+<p><strong>Cycle 9</strong></p>
+<ul>
+<li>Both <code>i1</code> and <code>i3</code> complete. Depending on bus arbitration policies - one, or both of them broadcast</li>
+</ul>
+</li>
+<li>
+<p><strong>Cycle 10 (optional)</strong></p>
+<ul>
+<li>The remaining instruction (if at all) broadcasts</li>
+</ul>
+</li>
+</ul>
+<p>And now we have demonstrated how ERR allows for out-of-order execution, solving the problem of WAR and WAW dependencies.
+ERR is usually more power hungry and larger than Tomasulo style processors.
+The ILP window can be made larger by increasing the size of the ROB, Issue Queues, and increasing the number of FUs/CDBs</p>
+<h2 id="discussion">Discussion</h2>
+<p>And now I have tried to explain the basic premise of OOO cpus. Nothing beats the IPC of pipelined CPUs if memory was ideal and
+didn&rsquo;t take ages to respond and was cheap for power/area. But OOO CPUs do a good job with what we have.</p>
+<p>It is worth noting that branches get much more complicated to deal with in a OOO CPU. In the case of a branch resolving, and
+the prediction being incorrect - when said branch instruction is committed from the ROB - and the misprediction is discovered - the
+entire CPU is flushed. Because of the number of queues and stages in an OOO processor - this is an expensive affair - significantly
+degrading its performance.</p>
+<h1 id="conclusion">Conclusion</h1>
+<p>This blog post took me a lot longer to write than I was expecting. It&rsquo;s my first attempt at trying to explain a fairly technical
+topic over text only. I have glossed over a lot of implementation details (ROB, CDB, RAT) and only tried to convey the intuiton for
+how OOO processors beat certain limitations - so reading a textbook/lecture slides on this is highly recommended. It should help
+cement the foundation of understanding, and go over implementation details I would also recommend taking a look at</p>
+<ul>
+<li>Computer Organization and Design RISC-V Edition: The Hardware Software Interface by David A. Patterson and John L. Hennessy</li>
+<li>Computer Architecture: A Quantitative Approach (6th Ed.) by John L. Hennessy and David A. Patterson</li>
+<li><a href="https://docs.boom-core.org/en/latest/">BOOM</a></li>
+<li><a href="https://dl.icdst.org/pdfs/files/15b09def448c317556dc0fc412aee571.pdf">Processor Microarchitecture an implementation perspective</a></li>
+</ul>
+<p>Part 2 of this will cover some of my experience designing a baseline CPU, and writing benchmarks to see what needed extra bells
+and whistles to run better.</p>
+<p>If you have an ideas for improving the clarity of this writeup- do let me know :D</p>
+</div>
+    </article>
+  </main>
+
+    </div>
+    <footer>
+  <hr />
+  
+    <p id="social">
+      Find me around the web:
+      <br />
+      
+        
+        <a href="https://github.com/screamingpigeon">GitHub</a>
+      
+         | 
+        <a href="https://linkedin.com/in/prakg">LinkedIn</a>
+      
+         | 
+        <a href="mailto://prakhar7@illinois.edu">Email</a>
+      
+    </p>
+  
+  <p class="builtWith">
+    Built with
+    <a href="http://www.gohugo.io/">Hugo</a>,
+    using the theme
+    <a href="https://gitlab.com/ian-s-mcb/smigle-hugo-theme">smigle</a>,
+    which was influenced by the theme
+    <a href="https://github.com/sumnerevans/smol">smol</a>.
+  </p>
+</footer>
+
+  </body>
+</html>

@@ -4,7 +4,7 @@
     <title>RSS on Prakhar Gupta</title>
     <link>//localhost:1313/rss/index.xml</link>
     <description>Recent content in RSS on Prakhar Gupta</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>en-us</language>
     <atom:link href="//localhost:1313/rss/index.xml" rel="self" type="application/rss+xml" />
   </channel>

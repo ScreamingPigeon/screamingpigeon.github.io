@@ -4,24 +4,10 @@
     <title>Conference on Prakhar Gupta</title>
     <link>//localhost:1313/tags/conference/</link>
     <description>Recent content in Conference on Prakhar Gupta</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 16 Nov 2024 20:00:00 -0600</lastBuildDate>
+    <lastBuildDate>Tue, 27 Aug 2024 11:55:40 -0500</lastBuildDate>
     <atom:link href="//localhost:1313/tags/conference/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Midwest Security Workshop 2024</title>
-      <link>//localhost:1313/blog/msw24/</link>
-      <pubDate>Sat, 16 Nov 2024 20:00:00 -0600</pubDate>
-      <guid>//localhost:1313/blog/msw24/</guid>
-      <description>I had the opportunity of visiting the 9th midwestern security workshop hosted at purdue this year.&#xA;I found out about this through a grad student (Patrick) who used to be (and still kinda is?) a part of ECE 391 (Operating-Systems) Course Staff. I handn&amp;rsquo;t visited the purdue campus, and figured that this might be worth going to - even if i know nothing about computer security.&#xA;Well, nothing in the &amp;ldquo;formal&amp;rdquo; academic context.</description>
-    </item>
-    <item>
-      <title>Neuroscience 2024</title>
-      <link>//localhost:1313/blog/sfn24/</link>
-      <pubDate>Sat, 05 Oct 2024 19:12:24 -0500</pubDate>
-      <guid>//localhost:1313/blog/sfn24/</guid>
-      <description>The weekend Before I don&amp;rsquo;t know where to start for this blog entry. Things have been super hectic and it&amp;rsquo;s been a long time since I have written actual words/sentences that aren&amp;rsquo;t meeting notes or homework/lab reports. Well I guess this blog post will evolve into meeting notes once I get to the actual conference.&#xA;Neuroscience 2024, is conveniently happening in Chicago, from 10/5 (i think) to 10/9. I am going to be there on 10/7 and 10/8.</description>
-    </item>
     <item>
       <title>Supermicrosummit24</title>
       <link>//localhost:1313/blog/supermicrosummit24/</link>

@@ -4,44 +4,16 @@
     <title>Blogs on Prakhar Gupta</title>
     <link>//localhost:1313/blog/</link>
     <description>Recent content in Blogs on Prakhar Gupta</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 16 Nov 2024 20:00:00 -0600</lastBuildDate>
+    <lastBuildDate>Tue, 27 Aug 2024 11:55:40 -0500</lastBuildDate>
     <atom:link href="//localhost:1313/blog/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Midwest Security Workshop 2024</title>
-      <link>//localhost:1313/blog/msw24/</link>
-      <pubDate>Sat, 16 Nov 2024 20:00:00 -0600</pubDate>
-      <guid>//localhost:1313/blog/msw24/</guid>
-      <description>I had the opportunity of visiting the 9th midwestern security workshop hosted at purdue this year.&#xA;I found out about this through a grad student (Patrick) who used to be (and still kinda is?) a part of ECE 391 (Operating-Systems) Course Staff. I handn&amp;rsquo;t visited the purdue campus, and figured that this might be worth going to - even if i know nothing about computer security.&#xA;Well, nothing in the &amp;ldquo;formal&amp;rdquo; academic context.</description>
-    </item>
-    <item>
-      <title>Danielkroening</title>
-      <link>//localhost:1313/blog/danielkroening/</link>
-      <pubDate>Wed, 09 Oct 2024 12:36:28 -0500</pubDate>
-      <guid>//localhost:1313/blog/danielkroening/</guid>
-      <description>Speaker Bio: Daniel Kroening is a Senior Principal Applied Scientist at Amazon, where he works on the correctness of the Neuron Compiler for distributed training and inference. Prior to joining Amazon, he worked as a Professor of Computer Science at the University of Oxford and is the co-founder of Diffblue Ltd., a University spinout that develops AI that targets code and code-like artifacts. He has received the Semiconductor Research Corporation (SRC) Inventor Recognition Award, an IBM Faculty Award, a Microsoft Research SEIF Award, and the Wolfson Research Merit Award.</description>
-    </item>
-    <item>
-      <title>Neuroscience 2024</title>
-      <link>//localhost:1313/blog/sfn24/</link>
-      <pubDate>Sat, 05 Oct 2024 19:12:24 -0500</pubDate>
-      <guid>//localhost:1313/blog/sfn24/</guid>
-      <description>The weekend Before I don&amp;rsquo;t know where to start for this blog entry. Things have been super hectic and it&amp;rsquo;s been a long time since I have written actual words/sentences that aren&amp;rsquo;t meeting notes or homework/lab reports. Well I guess this blog post will evolve into meeting notes once I get to the actual conference.&#xA;Neuroscience 2024, is conveniently happening in Chicago, from 10/5 (i think) to 10/9. I am going to be there on 10/7 and 10/8.</description>
-    </item>
     <item>
       <title>Supermicrosummit24</title>
       <link>//localhost:1313/blog/supermicrosummit24/</link>
       <pubDate>Tue, 27 Aug 2024 11:55:40 -0500</pubDate>
       <guid>//localhost:1313/blog/supermicrosummit24/</guid>
       <description>Super Micro Open Stroage Summit 2024 https://www.thecube.net/events/supermicro/open-storage-summit-2024&#xA;I attended the last 2 events at this stummit. Here are my thoughts and notes:&#xA;The New High Performance Computing: Optimized Storage from HPC to AI Speakers:&#xA;Randy Kreiser Supermicro CJ Newburn NVIDIA Balaji Venkateshwaran DDN Bill Panos Solidigm CJ- The moderator looks like he is being held at gunpoint.&#xA;Rate at which usage models are changing&#xA;need for new infrastructure&#xA;new models characterized by large scale and making memory accesses of fine granularity</description>
-    </item>
-    <item>
-      <title>Interacting with root processes using $LD_PRELOAD</title>
-      <link>//localhost:1313/blog/2408ld_preload/</link>
-      <pubDate>Fri, 09 Aug 2024 05:41:22 +0530</pubDate>
-      <guid>//localhost:1313/blog/2408ld_preload/</guid>
-      <description>What is $LD_PRELOAD? As listed in the man pages for ld.so:&#xA;LD_PRELOAD&#xA;A list of additional, user-specified, ELF shared objects to be loaded before all others. This feature can be used to selectively override functions in other shared objects.&#xA;Effectively, $LD_PRELOAD is an environment variable that points to one or more Shared Object (.so) files that are linked to an ELF file at runtime.&#xA;Clearly, this can lead to some pretty cool things.</description>
     </item>
   </channel>
 </rss>
