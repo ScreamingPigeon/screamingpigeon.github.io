@@ -1,7 +1,7 @@
 +++
 title = 'Developing an Out-Of-Order RISC-V CPU: part one'
 layout = 'Default'
-date = 2024-12-23T08:30:00-06:00 
+date = 2025-05-03T17:44:00-06:00 
 author = 'Prakhar'
 tags = ['projects', 'computer-architecture']
 +++
