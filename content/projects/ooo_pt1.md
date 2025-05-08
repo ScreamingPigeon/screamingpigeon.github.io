@@ -102,8 +102,7 @@ watching [this video](https://www.youtube.com/watch?v=zS9ngvUQPNM) for a more vi
 It is what I used to get a sense of what is going on when I took the class, and is probably
 far better than my attempt here.
 
-! insert picture here
-
+![Tomasulo Processor Layout](/projects/ooo_pt1_tomasulo.png#center "Tomasulo Processor Layout")
 
 The basic principle of this algorithm, called Tomasulo's Algorithm - is that instructions 
 are issued in-order, executed out-of-order, and committed/written-back in-order.

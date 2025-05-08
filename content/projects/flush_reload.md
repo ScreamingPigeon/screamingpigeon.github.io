@@ -1,5 +1,5 @@
 +++
-title = 'Flush_reload'
+title = 'Flush Reload'
 date = 2025-05-06T15:09:05-05:00
 layout = 'Default'
 author = 'Prakhar'
@@ -11,25 +11,26 @@ draft = true
 Last November, I got the chance to meet [Daniel Genkin](https://faculty.cc.gatech.edu/~genkin/) - at the [Midwest
 Security Workshop](https://www.midwestsecurityworkshop.com/agenda.html). He is one of the authors/discoveres of
 [SPECTRE](https://en.wikipedia.org/wiki/Spectre_(security_vulnerability)) and [MELTDOWN](https://en.wikipedia.org/wiki/Meltdown_(security_vulnerability))
- - some of the most critical vulnerabilities discovered in the last decade. These were also unpatchable due to them being
+, some of the most critical vulnerabilities discovered in the last decade. These were also unpatchable due to them being
  hardware vulnerabilities.
 
 Bumping into Daniel was a happy coincidence for me. I was aware that MSW had a section on HW Security (which is why I went in
-the first place) - but I never knew that an epic security researcher was going to be there. 
+the first place) - but I never knew that such an epic security researcher was going to be there. 
 
 Talking to him was a definitely a cool experience - and I got some solid advice about how to evaluate fields of study for 
 Graduate School. My main problem with grad school is having one semester to decide on what you want to do - and then 
-committing to it for the remaining 4.5 years (if not longer). Daniel recommended that I try out recreating some of 
+committing to it for the remaining 4.5 years (if not longer). Daniel recommended that I try recreating some of 
 the cornerstone HW vulnerabilities to get a feel of how much I like the work. 
 
 If I recall correctly, his perspective of HW sec, particularly that towards exposing vulnerabilities is - 
 
-    Replicate every single known hardware vulnerability on a new target and collect results. It is highly unlikely
-    that you will discover something in your first attempt. New hardware is immensenly complicated, proprietary,
-    and obfuscated. A huge chunk of the work is reverse-engineering the system inside.
 
-    Eventually, you will learn bits and pieces about what's inside - and then you can try more specific approaches,
-    but even then there is no guarantee of success.
+> *Replicate every single known hardware vulnerability on a new target and collect results. It is highly unlikely
+    that you will discover something in your first attempt. New hardware is immensenly complicated, proprietary,
+    and obfuscated. A huge chunk of the work is reverse-engineering the system inside.*
+
+> *Eventually, you will learn bits and pieces about what's inside - and then you can try more specific approaches,
+    but even then, there is no guarantee of success.*
 
 This is me paraphrasing, but I feel like it captures the gist of what he said pretty accurately. Coming up with HW
 exploits is an extremely iterative process.
@@ -100,7 +101,7 @@ Usuaully VIPT is the more robust scheme. Intel tends to use this scheme in its c
 these schemes work and why VIPT has benefits, [these slides](https://view.officeapps.livehttps://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fcourses.physics.illinois.edu%2Fece411%2Ffa2022%2Fslides%2Flect08_l.pptx.com/op/view.aspx?src=https%3A%2F%2Fcourses.physics.illinois.edu%2Fece411%2Ffa2022%2Fslides%2Flect08_l.pptx)
 do a pretty good job (I found these after a quick google search).
 
-**Section 2 of the Flush + Reload**[Paper](https://dl.acm.org/doi/10.5555/2671225.2671271) also explains the prerequisite 
+**Section 2 of the Flush + Reload** [paper](https://dl.acm.org/doi/10.5555/2671225.2671271) also explains the prerequisite 
 concepts needed to understand how the attack works.
 
 
@@ -113,7 +114,7 @@ The attack consists of 3 phases - **flush**, **wait**, and **reload**.
 1. **Flush**:
 
 The monitored cacheline containing the shared page is flushed from the memory hierarchy. This is done with the 
-[`clflush`](https://www.felixcloutier.com/x86/clflush) instruction. This instruction basicaLly takes an 
+[`clflush`](https://www.felixcloutier.com/x86/clflush) instruction. This instruction basically takes an 
 address, and flushes any cacheline containing said address from all 3 caches.
 
 
@@ -144,16 +145,31 @@ which can be used to infer program state for popular open-source programs, like 
 security library that implemnts [RSA](https://en.wikipedia.org/wiki/RSA_cryptosystem) encryption.
 
 
-### Inferring Program State
+### Inferring Private Keys
 
-Using memory access times to figure out the state of a program sounds pretty unfathomable - I found it hard to believe when
-I first read the paper.
+Using memory access times to decipher private keys sounded pretty unbelievable when I first read the paper. But it became 
+intuitive pretty quick. 
 
+The algorithm for RSA is well documented. GPG is FOSS and it's [source](https://github.com/gpg/gnupg) is available to anyone.
+
+It is known that the sequence of operations Square-Reduce-Multiply-Reduce indicates setting of a `1` in the 
+key. The sequence Square-Reduce without a multiply next indicates setting of a `0`.
+
+If the attacker were to constantly flush instructions associated with Square, Reduce, and Multiply,
+and then poll load times - it would be so easy to extrapolate what bits are being set in the key!
+Low load times for cachelines associated with Square would imply the target did a square operation - and
+so on. 
+
+This is exactly how flush reload works. Figuring out a sampling rate to get reliable data is hard -
+but that's just an implementation problem - we have intuition on our side now.
+
+In fact, overcoming the implementation details of this attack would appear to be the hard part.
 
 
 ### Challenges
 
-1. OOO Execution
+
+1. OOO Execution: 
 2. ASLR 
 3. Context Switches
 4. Speculative Execution
