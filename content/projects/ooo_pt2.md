@@ -1,7 +1,7 @@
 +++
 title = 'Developing an Out-Of-Order RISC-V CPU: part two'
 layout = 'Default'
-date = 2025-05-03T17:46:17-05:00
+date = 2025-05-05T17:46:17-05:00
 author = 'Prakhar'
 tags = ['projects', 'computer-architecture']
 draft = true
