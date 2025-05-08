@@ -49,7 +49,7 @@ A few important concepts before we get into how this attack works
 [Paging](https://en.wikipedia.org/wiki/Memory_paging) is a term you might have heard if you have taken an Operating Systems or Computer
 Architecture course in university. Paging operates on the principle of maintaining a "logical" or "**virtual**" map of your memory, that
 is mapped to the actual "physical" memory on your system. Different processes utilize distinct mappings between virtual/logical memory 
-and physical memory - which is enforced by the kernel. Such a techniquee offers 3 advantages 
+and physical memory - which is enforced by the kernel. Such a technique offers 3 advantages 
 - Security: Because processes use different paging schemes, it becomes hard for a malicious process to interfere with other 
 processes on your system. The ability to manipulate pages is managed by the kernel - and as such - only priveleged contexts
 can manipulate pages.
@@ -106,7 +106,7 @@ concepts needed to understand how the attack works.
 
 
 ## How does Flush Reload work?
-Flush + Reload works on x86 systems, and runs on a seperate core than the target process - effectively running in parallel.
+Flush + Reload works on x86 systems, and can run on the same or different core than the target process - effectively running in parallel.
 It also operates by manipulating pages that are shared by both the target and the attacker.
 
 The attack consists of 3 phases - **flush**, **wait**, and **reload**. 
@@ -152,8 +152,8 @@ intuitive pretty quick.
 
 The algorithm for RSA is well documented. GPG is FOSS and it's [source](https://github.com/gpg/gnupg) is available to anyone.
 
-It is known that the sequence of operations Square-Reduce-Multiply-Reduce indicates setting of a `1` in the 
-key. The sequence Square-Reduce without a multiply next indicates setting of a `0`.
+It is known that the sequence of operations Square-Reduce-Multiply-Reduce  indicates setting of a `1` in the 
+key. The sequence Square-Reduce (S,R) without a multiply (M) next indicates setting of a `0`.
 
 If the attacker were to constantly flush instructions associated with Square, Reduce, and Multiply,
 and then poll load times - it would be so easy to extrapolate what bits are being set in the key!
@@ -166,11 +166,75 @@ but that's just an implementation problem - we have intuition on our side now.
 In fact, overcoming the implementation details of this attack would appear to be the hard part.
 
 
+
 ### Challenges
 
 
 1. OOO Execution: 
-2. ASLR 
+    Modern Processors are not designed to run instructions in order. The CPU will try to schedule instructions in a different order 
+    (or parallely) than what the original programmer intended. The authors of this attack utilize the [lfence](https://www.felixcloutier.com/x86/mfence)
+    and [mfence](https://www.felixcloutier.com/x86/lfence) instructions to force the CPU to serially run the program.
+
+    `mfence` forces the CPU to wait for all preceding loads **and** stores to complete before proceeding. `lfence` forces the CPU to wait for all
+    preceding loads to complete before proceeding. This allows the code used to "probe" reload time to be unaffected by other sections of the attacker's
+    program.
+
+2. ASLR: also known as [Address Space Layour Randomization](https://en.wikipedia.org/wiki/Address_space_layout_randomization) is used by the Linux kernel
+   to "shuffle" how the memory needed by a process is loaded into memory. It moves around the position of the stack, heap, and executable sections to make
+   it hard for attackers to figure out what memory address to target. [This](https://pax.grsecurity.net/docs/aslr.txt) is a really good example of how
+   ASLR helps.
+
+   In our case, `libcrypt.so` is a shared page, so both processes relies on the same ASLR mapping. However! The LLC on Intel uses a VIPT scheme. 
+
+   In a VIPT scheme - the lower bits of a "virtual" address are used to index into the cache. The upper bits of the physical address are used to 'validate'
+   that the address hit is correct (validated against the TLB). However! If the page offset bits for paging equal the number of index/offset bits in the cache -
+   the "tag" will be the same as physical address.The offset/index bits don't matter since they are the same for both virtual and physical addresses.
+   Thus you only need to know the physical address, i.e, the "tag" and you can identify the page that needs targetting.
+
+   This is why ASLR fails to impede the attacker.
+
 3. Context Switches
-4. Speculative Execution
+
+   A big benefit of Operating-Systems is the isolation of processes. On a system with multiple processes, context-switches happen constantly.
+   On a system with more threads than CPUs, concurrency allows threads to "time-slice" on the CPU. Additionally, the kernel may interrupt threads 
+   to perform system activity. All of these may cause discrepancies leading to the attacker unable to sample at regular periods, and for the target's
+   accesses to instructions in (S, R, M) to become sporadic - causing capture errors. 
+
+   The authors reported that a manual inspection of probe times can reduce such errors by 25-50%. 
+
+4. Speculative Execution and Prefetching
+   
+   In addition to OOO execution - processors execute branches speculatively - i.e evaulate both branches and only commit the correct one.
+   They also tend to have [prefetchers](https://en.wikipedia.org/wiki/Cache_prefetching) that may preemptively reload cachelines to 
+   boost [AMAT](https://en.wikipedia.org/wiki/Average_memory_access_time). This may cause low probe times despite the processor not executing
+   SRM operations.
+
+   The authors recommended avoiding probing lines at the start of the SRM functions to reduce the "noise" introduced by speculative execution.
+     
+   
 5. Virtualization
+   
+   So far, we have discussed "content-aware page sharing", where identical pages are identified using disk location and then shared by processes in memory.
+   Modern servers use several layers of virtualization - including VMs and Hypervisors - which use "content-based page sharing". This technique 
+   offers higher memory efficiency, as a result of a more aggressive sharing mechanism. The system scans memory, and basically merges unrelated pages
+   with the same contents.
+
+    TODO: Decide if this is worth mentioning as a con
+
+### Thoughts on the attack 
+
+This is pretty cool tbh. I can't think of a HW solution that fixes this problem. The only fix I could think of is disabling cache flushing in the LLC. I am
+not sure how many important programs rely on `cflush` - and it would fix the problem immediately.
+
+The authors mention ["constant-time exponentiation"](https://eprint.iacr.org/2021/1121.pdf) as another solution. If I recall correctly, this has become the
+norm after vulnerabilities like Flush Reload were discovered.
+
+
+# My Demo 
+
+Now for the fun part - trying to implement this. I have only briefly loked at the program for `flush()` and `probe()`, and the execution frequency for these.
+I am hopeful that I can (somewhat) authentically develop the attack, with iterative improvements.
+
+It's been a minute since I have written x86 assembly. After refreshing my memory on [writing inline assembly](http://www.osdever.net/tutorials/view/a-brief-tutorial-on-gcc-inline-asm)
+, I got started
+
