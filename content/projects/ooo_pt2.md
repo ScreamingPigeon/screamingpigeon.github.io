@@ -85,10 +85,37 @@ The instruction queue, that would hold decoded instructions - was designed as a 
 We parameterized the size of the FIFO, and icache, so as to be able to sweep parameters later in the assignment to select
 the most optimize our design.
 
+Given the limited amount of work needed for the checkpoint - completing it was fairly uneventful.
 
 ### Checkpoint 2
 
+Completing this next checkpoint probably required the most grinding - given the insane time crunch. We basically
+had to design and test the remaining skeleton of the CPU in 2 weeks. The main stages that needed work were
+- Physical Register File
+- Issue logic (Register Renaming, RAT, Free List, Issue Queues, Dispatch logic)
+- I-extension Functional Unit
+- M-Extension Functional Unit
+- CDB, CDB Arbiter
+- Backend (ROBs and Commits, RRAT)
+
+I worked on the RAT, Free List, I-Extension Functional Unit, and the RRAT, and the CDB arbiter for this checkpoint. 
 
 
+
+
+### Checkpoint 3
+Another stacked checkpoint (although not as terrible as CP2). For this one we were implementing
+- Static not-taken branch prediction scheme
+- Branch Resolution and Flushes
+- Loads and Stores (FU)
+
+
+
+### Competition Spec
+For the competition, we decided to implement the following features
+- Branch Predictor with BTB with Saturating coutner
+- Split Load Store Queue
+- Pre-commit store buffer
+- Next line prefetcher
 
 

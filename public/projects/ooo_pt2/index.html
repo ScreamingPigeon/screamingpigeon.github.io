@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="description"
+    content=""
+  />
+  
+    
+      <title>Developing an Out-Of-Order RISC-V CPU: part two | Prakhar Gupta</title>
+    
+  
+  <link rel="stylesheet" href="/css/reset.css"/>
+  <link rel="stylesheet" href="/css/font.css"/>
+  <link rel="stylesheet" href="/css/smigle.css"/>
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="theme-color" content="#ffffff">
+</head>
+
+  <body>
+    <header>
+  <div id="brand">
+    <a class="icon-link" href="//localhost:1313/">
+      <img
+        class="icon"
+        src="/images/brandIcon.svg"
+      />
+    </a>
+    <div class="text">
+      <a href="//localhost:1313/"><h1>Prakhar Gupta</h1></a>
+      <h3>I like computers...</h3>
+    </div>
+  </div>
+  <nav>
+    
+      
+        
+        <a href="/"><b>Home</b></a>
+      
+         | 
+        <a href="/about/"><b>About Me</b></a>
+      
+         | 
+        <a href="/research/"><b>Research</b></a>
+      
+         | 
+        <a href="/projects/"><b>Projects</b></a>
+      
+         | 
+        <a href="/blog/"><b>Blog</b></a>
+      
+         | 
+        <a href="/index.xml"><b>RSS</b></a>
+      
+    
+  </nav>
+  <hr />
+</header>
+
+    <div id="content">
+      
+  <main>
+    <article>
+      <h1>Developing an Out-Of-Order RISC-V CPU: part two</h1>
+      <div class="post-meta">
+  <strong>
+    <span>Posted on</span>
+    <time>2025-05-05 17:46:17</time>
+    
+    
+  </strong>
+  <span> • 901 words</span>
+  <span> • 5 minute read</span>
+  
+  
+    <div>
+      <span>Tags:</span>
+      
+        <a href="/tags/projects">projects</a>, 
+        <a href="/tags/computer-architecture">computer-architecture</a>
+    </div>
+  
+</div>
+
+      <div><p>This is going to be a follow-up to my last post. I realized that the topic
+was going to be to big too cover (and also write) in one sitting. In the last
+<a href="https://screamingpigeon.github.io/projects/ooo_pt1/">blog post</a>, I go over
+the general premise of out-of-order processors. In this post, I will try to share
+my experience designing and verifying such a CPU, and reflect on the challenges and
+rationalization of certain design choices.</p>
+<h2 id="timeline">Timeline</h2>
+<p>The computer architecture class gives you about 7 weeks to build out your OOO processor.</p>
+<ul>
+<li>The first week gives you time to setup a frontend (Fetch, Decode, and Instruction Queue) and your instruction cache</li>
+<li>The next 2 weeks give you time to get issue/dispatch logic working, and also create
+functional units for arithmetic operations. You are also exptected to get the ROB and commit logic
+going in this phase</li>
+<li>The next 2 weeks are for implementing a data cache, and a load/store unit. You are also supposed
+to get branches working.</li>
+<li>And finally - you have 2 weeks to implement any extra features that you think might help your processor
+run better.</li>
+</ul>
+<p>During these last 2 weeks - a leaderboard was setup. Nightly runs would evaluate the performance of your
+processor and update your ranking. The best CPU would get $2000 from Optiver - a quant firm.</p>
+<p>The cash prize + clout become a strong motivating factor for a lot of teams. The last couple weeks ended
+up being a fevrent rush for the top spot - with teams constantly redesigning bits and pieces of their
+CPU to milk every last bit of performance</p>
+<h2 id="building-the-baseline-cpu">Building the baseline CPU</h2>
+<h3 id="checkpoint-1">Checkpoint 1</h3>
+<p>The frontend for any implementation of an OOO processor is pretty straightforward. The only thing to watch
+out for is a <a href="https://en.wikipedia.org/wiki/Superscalar_processor">superscalar</a> implementation.</p>
+<p>Think of the frontend as a single lane one-way street. A (parameterizable) superscalar frontend would require
+designing the frontend to support two, three, or N lanes of instructions.</p>
+<p>BUT! Don&rsquo;t OOO CPUs only execute out of order? Aren&rsquo;t the issues and commits in order? Yes - but issues
+are not part of this checkpoiht - so my team decided to cross that bridge when we get to it, and ignored
+this problem for the time being.</p>
+<p>For now, we designed the fetch stage to request an address (pretty straightforward), but then fetch <code>(PC + N)</code> on the
+next cycle. The decode stage was designed to handle decoding (N) instructions (<code>PC</code>, <code>PC + 1</code>,<code>...</code> ,<code>PC + N-1</code>)
+instructions simulatenously. The reasoning was that, we could just design our icache to spit out N instruction given that
+<code>N &lt; cacheline size /4</code>.</p>
+<p>We were considering to fix N * instruction size to 1/2, 1/4 or 1/8 of the cacheline size to streamline the logic.</p>
+<p>I personally worked on implementing the cache and the cache arbiter. In Von-Neumann Architecture, the programs (instructions)
+and data reside in a &ldquo;unified memory space&rdquo;. However in practice, there are several benefits to physically
+differentiation instruction and data memory. Hardware design influences software, and software influences hardware design
+(forming a feedback loop if you will).</p>
+<p>An example would be <a href="https://en.wikipedia.org/wiki/Executable_and_Linkable_Format"><code>ELF</code></a> has different sections for the program (.txt) and data
+(.bss). And in most cases (except a program that explicitly modifies itself (aka its instructions)) - there are a lot of
+performance benefits from seperating the memory subsystem for instructions and data. Moreso, modern compilers will probably
+optimize away self-modifying patters when compiling code for processors that have a split memory subsystem.</p>
+<p>Anyways, getting back to the point here. The main benefit of splitting the i-cache and d-cache would be</p>
+<ul>
+<li>The icache ends up being read only, reducing size, area, and allowing faster clock speed on fetch</li>
+<li>icahce and dcache can be used in parallel, by the fetch stage, and by a load-store FU, reducing stalls</li>
+</ul>
+<p>In our case, the memory was unified at the RAM level (there was a single block RAM for ALL memory), and as such
+the caches would need to go through an arbiter. We decided to always prioritize the instruction cache as &ldquo;slowdowns&rdquo;
+in the fetch stage would affect the entire system, as opposed to slow downs on the load-stores would just affect its FU.</p>
+<p>The instruction queue, that would hold decoded instructions - was designed as a <a href="https://www.chipverify.com/verilog/synchronous-fifo">FIFO</a>.
+We parameterized the size of the FIFO, and icache, so as to be able to sweep parameters later in the assignment to select
+the most optimize our design.</p>
+<p>Given the limited amount of work needed for the checkpoint - completing it was fairly uneventful.</p>
+<h3 id="checkpoint-2">Checkpoint 2</h3>
+<p>Completing this next checkpoint probably required the most grinding - given the insane time crunch. We basically
+had to design and test the remaining skeleton of the CPU in 2 weeks. The main stages that needed work were</p>
+<ul>
+<li>Physical Register File</li>
+<li>Issue logic (Register Renaming, RAT, Free List, Issue Queues, Dispatch logic)</li>
+<li>I-extension Functional Unit</li>
+<li>M-Extension Functional Unit</li>
+<li>CDB, CDB Arbiter</li>
+<li>Backend (ROBs and Commits, RRAT)</li>
+</ul>
+<p>I worked on the RAT, Free List, I-Extension Functional Unit, and the RRAT, and the CDB arbiter for this checkpoint.</p>
+<h3 id="checkpoint-3">Checkpoint 3</h3>
+<p>Another stacked checkpoint (although not as terrible as CP2). For this one we were implementing</p>
+<ul>
+<li>Static not-taken branch prediction scheme</li>
+<li>Branch Resolution and Flushes</li>
+<li>Loads and Stores (FU)</li>
+</ul>
+<h3 id="competition-spec">Competition Spec</h3>
+<p>For the competition, we decided to implement the following features</p>
+<ul>
+<li>Branch Predictor with BTB with Saturating coutner</li>
+<li>Split Load Store Queue</li>
+<li>Pre-commit store buffer</li>
+<li>Next line prefetcher</li>
+</ul>
+</div>
+    </article>
+  </main>
+
+    </div>
+    <footer>
+  <hr />
+  
+    <p id="social">
+      Find me around the web:
+      <br />
+      
+        
+        <a href="https://github.com/screamingpigeon">GitHub</a>
+      
+         | 
+        <a href="https://linkedin.com/in/prakg">LinkedIn</a>
+      
+         | 
+        <a href="mailto://prakhar7@illinois.edu">Email</a>
+      
+    </p>
+  
+  <p class="builtWith">
+    Built with
+    <a href="http://www.gohugo.io/">Hugo</a>,
+    using the theme
+    <a href="https://gitlab.com/ian-s-mcb/smigle-hugo-theme">smigle</a>,
+    which was influenced by the theme
+    <a href="https://github.com/sumnerevans/smol">smol</a>.
+  </p>
+</footer>
+
+  </body>
+</html>

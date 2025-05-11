@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="description"
+    content=""
+  />
+  
+    
+      <title>Danielkroening | Prakhar Gupta</title>
+    
+  
+  <link rel="stylesheet" href="/css/reset.css"/>
+  <link rel="stylesheet" href="/css/font.css"/>
+  <link rel="stylesheet" href="/css/smigle.css"/>
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="theme-color" content="#ffffff">
+</head>
+
+  <body>
+    <header>
+  <div id="brand">
+    <a class="icon-link" href="//localhost:1313/">
+      <img
+        class="icon"
+        src="/images/brandIcon.svg"
+      />
+    </a>
+    <div class="text">
+      <a href="//localhost:1313/"><h1>Prakhar Gupta</h1></a>
+      <h3>I like computers...</h3>
+    </div>
+  </div>
+  <nav>
+    
+      
+        
+        <a href="/"><b>Home</b></a>
+      
+         | 
+        <a href="/about/"><b>About Me</b></a>
+      
+         | 
+        <a href="/research/"><b>Research</b></a>
+      
+         | 
+        <a href="/projects/"><b>Projects</b></a>
+      
+         | 
+        <a href="/blog/"><b>Blog</b></a>
+      
+         | 
+        <a href="/index.xml"><b>RSS</b></a>
+      
+    
+  </nav>
+  <hr />
+</header>
+
+    <div id="content">
+      
+  <main>
+    <article>
+      <h1>Danielkroening</h1>
+      <div class="post-meta">
+  <strong>
+    <span>Posted on</span>
+    <time>2024-10-09 12:36:28</time>
+    
+    
+  </strong>
+  <span> • 403 words</span>
+  <span> • 2 minute read</span>
+  
+  
+    <div>
+      <span>Tags:</span>
+      
+        <a href="/tags/blog">blog</a>, 
+        <a href="/tags/talks">talks</a>
+    </div>
+  
+</div>
+
+      <div><p>Speaker Bio: Daniel Kroening is a Senior Principal Applied Scientist at Amazon,
+where he works on the correctness of the Neuron Compiler for distributed training
+and inference. Prior to joining Amazon, he worked as a Professor of Computer Science
+at the University of Oxford and is the co-founder of Diffblue Ltd., a University
+spinout that develops AI that targets code and code-like artifacts. He has received
+the Semiconductor Research Corporation (SRC) Inventor Recognition Award, an IBM Faculty
+Award, a Microsoft Research SEIF Award, and the Wolfson Research Merit Award. He serves
+on the CAV steering committee and was co-chair of FLOC 2018, EiC of Springer FMSD, and
+is co-author of the textbooks on Decision Procedures and Model Checking.</p>
+<h1 id="ai-acceleratord-101">AI Acceleratord 101</h1>
+<h2 id="annapurna-labs---silicon-innovation-at-aws">Annapurna Labs - Silicon Innovation at AWS</h2>
+<ul>
+<li>AWS Nitro System: Hyperivisor, network storage, ssd, and security. Virtualization (Zen - Hypervisor)</li>
+<li>AWS Graviton3 - Powerful and efficient modern applications. ARM CPUs on servers - power efficient</li>
+<li>AWS Inferentia and Trainium - ML accleration</li>
+</ul>
+<p>Annapurna Labs is an acquisition.</p>
+<p>There has beene exponential growth in LLM Model Complexity in terms of # of parameters. As number of parameters increase
+you still need to access each parameter to answer questions. Server compute has not grown as fast as model complexity.
+There&rsquo;s going to be a gap between buyers and what industry can deliver.</p>
+<p>It&rsquo;s all going to be compiler technology that covers this gap. Offers biggest benefit in terms of performance gains.</p>
+<p>Q: Even with 2T param models, theree is insufficient data. How can we ever hit 10T?
+A: Not so worried, we will find it somewhere. Humans will work hard, for a little pay, to make the data exist. Backfilling
+things like audio and video - eventhough they might not be as dense in terms of information when compared to text</p>
+<h2 id="why-build-an-ai-accelerator">Why build an AI Accelerator?</h2>
+<p>ASICs &lt;-&gt; Accelerator &lt;-&gt; FPGAs &lt;-&gt; GPUs &lt;-&gt; Vector &lt;-&gt; VLIW &lt;-&gt; CPUs
+Specialized &lt;&ndash;&gt; General Purpose</p>
+<p>Neural Architectures are getting more and more dynamic. Which means the shape of computing depends on the input. Architecture
+called &ldquo;mixture of expoerts&rdquo; very dynamic nature. People built llama chips, but these struggle as soon as you do branching
+in computation styles. There is some benefit to specialized chips, but there is pushback because they may not be
+future proof.</p>
+<p>Not only does hardware need to cover this, compilers also need to cover this.</p>
+<h2 id="start-from-workload">Start from workload</h2>
+<ul>
+<li>load data from memory</li>
+</ul>
+</div>
+    </article>
+  </main>
+
+    </div>
+    <footer>
+  <hr />
+  
+    <p id="social">
+      Find me around the web:
+      <br />
+      
+        
+        <a href="https://github.com/screamingpigeon">GitHub</a>
+      
+         | 
+        <a href="https://linkedin.com/in/prakg">LinkedIn</a>
+      
+         | 
+        <a href="mailto://prakhar7@illinois.edu">Email</a>
+      
+    </p>
+  
+  <p class="builtWith">
+    Built with
+    <a href="http://www.gohugo.io/">Hugo</a>,
+    using the theme
+    <a href="https://gitlab.com/ian-s-mcb/smigle-hugo-theme">smigle</a>,
+    which was influenced by the theme
+    <a href="https://github.com/sumnerevans/smol">smol</a>.
+  </p>
+</footer>
+
+  </body>
+</html>
