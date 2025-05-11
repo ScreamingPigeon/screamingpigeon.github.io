@@ -45,15 +45,50 @@ CPU to milk every last bit of performance
 ### Checkpoint 1
 
 The frontend for any implementation of an OOO processor is pretty straightforward. The only thing to watch
-out for is a [superscalar]() implementation. 
+out for is a [superscalar](https://en.wikipedia.org/wiki/Superscalar_processor) implementation. 
 
 Think of the frontend as a single lane one-way street. A (parameterizable) superscalar frontend would require
-designing the frontend to support two, three, or N lanes. 
+designing the frontend to support two, three, or N lanes of instructions.  
 
-
-BUT! Don't OOO CPUs only execute out of order. Aren't the issues and commits in order? Yes - but issues 
+BUT! Don't OOO CPUs only execute out of order? Aren't the issues and commits in order? Yes - but issues 
 are not part of this checkpoiht - so my team decided to cross that bridge when we get to it, and ignored 
-this problem
+this problem for the time being.
+
+For now, we designed the fetch stage to request an address (pretty straightforward), but then fetch `(PC + N)` on the 
+next cycle. The decode stage was designed to handle decoding (N) instructions (`PC`, `PC + 1`,`...` ,`PC + N-1`) 
+instructions simulatenously. The reasoning was that, we could just design our icache to spit out N instruction given that
+`N < cacheline size /4`.
+
+We were considering to fix N * instruction size to 1/2, 1/4 or 1/8 of the cacheline size to streamline the logic.
+
+
+I personally worked on implementing the cache and the cache arbiter. In Von-Neumann Architecture, the programs (instructions)
+and data reside in a "unified memory space". However in practice, there are several benefits to physically 
+differentiation instruction and data memory. Hardware design influences software, and software influences hardware design
+(forming a feedback loop if you will). 
+
+An example would be [`ELF`](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format) has different sections for the program (.txt) and data
+(.bss). And in most cases (except a program that explicitly modifies itself (aka its instructions)) - there are a lot of 
+performance benefits from seperating the memory subsystem for instructions and data. Moreso, modern compilers will probably
+optimize away self-modifying patters when compiling code for processors that have a split memory subsystem.
+
+Anyways, getting back to the point here. The main benefit of splitting the i-cache and d-cache would be
+- The icache ends up being read only, reducing size, area, and allowing faster clock speed on fetch
+- icahce and dcache can be used in parallel, by the fetch stage, and by a load-store FU, reducing stalls
+
+In our case, the memory was unified at the RAM level (there was a single block RAM for ALL memory), and as such 
+the caches would need to go through an arbiter. We decided to always prioritize the instruction cache as "slowdowns"
+in the fetch stage would affect the entire system, as opposed to slow downs on the load-stores would just affect its FU.
+
+
+The instruction queue, that would hold decoded instructions - was designed as a [FIFO](https://www.chipverify.com/verilog/synchronous-fifo).
+We parameterized the size of the FIFO, and icache, so as to be able to sweep parameters later in the assignment to select
+the most optimize our design.
+
+
+### Checkpoint 2
+
+
 
 
 
