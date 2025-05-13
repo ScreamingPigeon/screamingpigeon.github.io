@@ -100,8 +100,31 @@ had to design and test the remaining skeleton of the CPU in 2 weeks. The main st
 
 I worked on the RAT, Free List, I-Extension Functional Unit, and the RRAT, and the CDB arbiter for this checkpoint. 
 
+#### Physical Register File
+We decided to use a MACRO in the top level testbench to pass in as a parameter into several modules hierarchically.
+One of these parameters happened to be the size of the physical register file (which was also used as the size for
+the ROB). We had a 64 register PRF with multiported reads and writes. This means that multiple registers could
+be read and written to simulatenously.
+
+A couple of friends who had taken the class earlier mentioned that in the synthesis configuration the class
+was using - multiple ports did not signifiantly increase the area/power of a module. It would be much
+simpler for us to add multiple ports to the register file than to figure out an arbitration scheme.
+
+We also had the option to do asymmetric read and write ports - likely supporting more simultaneous reads
+than writes. The reasoning for this would be that any `r` operation would require 2 operands, and the
+result would be written into a single register. Along with `i` and `j` type instructions, the average
+number of reads would definitely exceed the number of writes. But due to the synthesis cost of extra ports
+being low, we did not pursue this avenue. 
+
+We decided on 2 read ports per functional unit. This came out to be 4 of (read, read, write) ports. The only 
+cost of increasing the number of ports would be the  increased combinational logic for write-forwarding to support a
+**transparent registerfile**
 
 
+#### Issue Logic
+Similar to a pipelined CPU - the Issue Logic stage of the CPU would get a "stall" signal from the deeper parts
+of the CPU. In this case, these would come from the Issue Queues for the different functional units. 
+The issue logic stalled 
 
 ### Checkpoint 3
 Another stacked checkpoint (although not as terrible as CP2). For this one we were implementing
