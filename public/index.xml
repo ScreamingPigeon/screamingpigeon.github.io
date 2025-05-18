@@ -9,6 +9,24 @@
 
     
     <item>
+      <title>Flush Reload</title>
+      <link>//localhost:1313/blog/flush_reload/</link>
+      <description>
+          Intro Last November, I got the chance to meet Daniel Genkin - at the Midwest Security Workshop. He is one of the authors/discoveres of SPECTRE and MELTDOWN , some of the most critical vulnerabilities discovered in the last decade. These were also unpatchable due to them being hardware vulnerabilities.
+Bumping into Daniel was a happy coincidence for me. I was aware that MSW had a section on HW Security (which is why I went in the first place) - but I never knew that such an epic security researcher was going to be there.
+          
+          
+            <p>Tags: <a href="/tags/blog">blog</a> <a href="/tags/computer-architecture">computer-architecture</a> <a href="/tags/security">security</a> </p>
+          
+          <p>Word Count: 2055</p>
+          <p>Reading Time: 10 minutes</p>
+          
+      </description>
+      <pubDate>Tue, 06 May 2025 15:09:05 CDT</pubDate>
+      <guid>//localhost:1313/blog/flush_reload/</guid>
+    </item>
+    
+    <item>
       <title>Developing an Out-Of-Order RISC-V CPU: part one</title>
       <link>//localhost:1313/projects/ooo_pt1/</link>
       <description>

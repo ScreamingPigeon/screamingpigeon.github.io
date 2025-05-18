@@ -8,23 +8,29 @@
     <loc>//localhost:1313/</loc>
     <lastmod>2025-05-09T16:13:21-05:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/projects/</loc>
+    <loc>//localhost:1313/tags/blog/</loc>
     <lastmod>2025-05-06T15:09:05-05:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/computer-architecture/</loc>
-    <lastmod>2025-05-03T17:44:00-06:00</lastmod>
+    <lastmod>2025-05-06T15:09:05-05:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/blog/flush_reload/</loc>
+    <lastmod>2025-05-06T15:09:05-05:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/security/</loc>
+    <lastmod>2025-05-06T15:09:05-05:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/</loc>
+    <lastmod>2025-05-06T15:09:05-05:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/projects/</loc>
+    <lastmod>2025-05-05T17:46:17-05:00</lastmod>
   </url><url>
     <loc>//localhost:1313/projects/ooo_pt1/</loc>
     <lastmod>2025-05-03T17:44:00-06:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/projects/</loc>
     <lastmod>2025-05-03T17:44:00-06:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/</loc>
-    <lastmod>2025-05-03T17:44:00-06:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/blog/</loc>
-    <lastmod>2024-08-27T11:55:40-05:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/conference/</loc>
     <lastmod>2024-08-27T11:55:40-05:00</lastmod>
