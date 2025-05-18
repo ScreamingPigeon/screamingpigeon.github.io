@@ -1,6 +1,6 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Prakhar Gupta</title>
+    <title>ScreamingPigeon</title>
     <link>//localhost:1313/</link>
     <description>I like computers...</description>
     <generator>Hugo</generator>
@@ -18,7 +18,7 @@ Last fall, I took ECE 411 the infamous computer-architecture class at my univers
           
             <p>Tags: <a href="/tags/projects">projects</a> <a href="/tags/computer-architecture">computer-architecture</a> </p>
           
-          <p>Word Count: 3127</p>
+          <p>Word Count: 3124</p>
           <p>Reading Time: 15 minutes</p>
           
       </description>

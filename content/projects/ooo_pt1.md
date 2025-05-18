@@ -35,9 +35,10 @@ Hopefully it doesn't take me another 6 months to write it XD
 # What is Out-Of-Order?
 
 If you're not already familiar - I would recommend you look at
-        - [Von Neuomann Architecture](https://en.wikipedia.org/wiki/Von_Neumann_architecture)
-        - [In-Order Pipelined CPUs](https://en.wikipedia.org/wiki/Instruction_pipelining)
-        - [Caches](https://en.wikipedia.org/wiki/Cache_(computing))
+
+- [Von Neuomann Architecture](https://en.wikipedia.org/wiki/Von_Neumann_architecture)
+- [In-Order Pipelined CPUs](https://en.wikipedia.org/wiki/Instruction_pipelining)
+- [Caches](https://en.wikipedia.org/wiki/Cache_(computing))
 
 In most computers - memory is very limited. CPU registers are implemented using flip-flops
 which are power hungry, and occupy considerable area. As such you end up consuming a lot of

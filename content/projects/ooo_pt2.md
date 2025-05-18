@@ -98,7 +98,8 @@ had to design and test the remaining skeleton of the CPU in 2 weeks. The main st
 - CDB, CDB Arbiter
 - Backend (ROBs and Commits, RRAT)
 
-I worked on the RAT, Free List, I-Extension Functional Unit, and the RRAT, and the CDB arbiter for this checkpoint. 
+I worked on the RAT, Free List, PRF,  I-Extension Functional Unit, and the RRAT, and the CDB arbiter for this checkpoint. 
+
 
 
 

@@ -1,10 +1,10 @@
 baseURL = '127.0.0.1'
 languageCode = 'en-us'
-title = 'Prakhar Gupta'
+title = 'ScreamingPigeon'
 theme = "smigle"
 
 [params]
-    author = "Prakhar Gupta"
+    author = "ScreamingPigeon"
     subtitle = "I like computers..."
     mainSections = ["blog", "projects"]
     rssLink = "/rss.xml"
